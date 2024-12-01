@@ -21,9 +21,9 @@ You should have received a prompt asking you to perform the initial application 
 5. In the same `.amber.yml` file, update the `watch.run.run_commands` section so that it changes from `bin/agentc_app_template_oss` to the newly updated file name from the previous step.
 6. Update the `config/database.yml` file so that the `db` field is the application name in snake case, followed by `_development`, `_test`, and `_production`.
 7. Update the `config/database.yml` file so that the `user` field in the `default` section is the local username returned by the `whoami` command if the user is on MacOS, or the username `postgres` if the user is on Linux.
-8. Run the `crystal build sam.cr` command and then run `./sam db:create && ./sam db:migrate && ./sam db:seed` to create the database, run migrations, and seed the database.
-9. Update the `src/views/home/index.ecr` file so that the `<h2>` tag contains the application name in proper title case.
-10. Run the `shards install` command to install the dependencies.
+8. Run the `shards install` command to install the dependencies.
+9. Run the `crystal build sam.cr` command and then run `./sam db:create && ./sam db:migrate && ./sam db:seed` to create the database, run migrations, and seed the database.
+10. Update the `src/views/home/index.ecr` file so that the `<h2>` tag contains the application name in proper title case.
 
 
 ## Confirming Everthing Works
