@@ -3,7 +3,7 @@ require "log"
 # About logger.cr File
 #
 # Amber is using the crystal standard library Log
-# You can read details here: https://crystal-lang.org/api/0.35.0/Log.html
+# You can read details here: https://crystal-lang.org/api/latest/Log.html
 
 # Using environment settings:
 Colorize.enabled = Amber.settings.logging.colorize

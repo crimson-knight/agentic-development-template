@@ -1,0 +1,17 @@
+default: &default
+  host: localhost
+  user: `whoami`
+  password: ''
+  adapter: postgres
+
+development:
+  <<: *default
+  db: agentc_app_template_oss_development
+
+test:
+  <<: *default
+  db: agentc_app_template_oss_test
+
+production:
+  <<: *default
+  db: agentc_app_template_oss_production
