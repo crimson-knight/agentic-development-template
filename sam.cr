@@ -5,6 +5,8 @@ require "./db/migrations/*"
 require "./src/models/*"
 require "sam"
 
+load_dependencies "jennifer"
+
 # Here you can define your tasks
 # desc "with description to be used by help command"
 # task "test" do
