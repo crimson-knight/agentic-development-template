@@ -1,5 +1,8 @@
 #!/bin/crystal
 
+require "./config/database.cr"
+require "./db/migrations/*"
+require "./src/models/*"
 require "sam"
 
 # Here you can define your tasks
