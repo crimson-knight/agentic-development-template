@@ -11,6 +11,8 @@ You should have received a prompt asking you to perform the initial application 
 3. Check if the user is on MacOS. If so, check that brew is installed.
 4. Check if the user is on Linux. If so, check that the postgres client is installed.
 5. Check that the `whoami` command returns the local username, if the user is on MacOS.
+6. Check to see if the `crystal` command is available. If not, install it using the `brew install crystal` command if the user is on MacOS, or if on Linux, using the instructions [here](./installing_crystal_on_linux.md).
+7. Check which version of postgres is installed. If it's less than 17, you should install it with `brew install postgresql@17` and then relink `psql` to the new version with `brew link --force postgresql@17 && brew link --force libpq` if the user is on MacOS. If the user is on Linux, you should tell the user to install it with their package manager, probably `apt install postgresql@17`.
 
 ## Initial Application Configuration Instructions
 
