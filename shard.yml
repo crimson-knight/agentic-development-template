@@ -36,11 +36,19 @@ dependencies:
     github: will/crystal-pg
     version: ~> 0.26.0
 
-  citrine-i18n:
-    github: dare892/citrine-i18n
-    version: ~> 1.0.0
+  jennifer:
+    github: imdrasil/jennifer.cr
+    branch: master
+
+  asset_pipeline:
+    github: amberframework/asset_pipeline
+    version: ~> 0.34.0
 
 development_dependencies:
   ameba:
     github: crystal-ameba/ameba
     version: ~> 1.5.0
+
+  sam:
+    github: imdrasil/sam.cr
+    version: ~> 0.5.0
