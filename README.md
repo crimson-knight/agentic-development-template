@@ -74,36 +74,3 @@ If you're not sure which document to look with, you can always have the agent lo
   In the cursor sidebar, CMD+SHIFT+O (the letter O, not the number `0`) and then type `I want you to perform @files/initial_application_configuration using the application name <your application name> and my github username <`.
 
 
-
-To start your Amber server:
-
-1. Install dependencies with `shards install`
-2. Build executables with `shards build`
-3. Create and migrate your database with `bin/amber db create migrate`. Also see [creating the database](https://docs.amberframework.org/amber/guides/create-new-app#creating-the-database).
-4. Start Amber server with `bin/amber watch`
-
-Now you can visit http://localhost:3000/ from your browser.
-
-Getting an error message you need help decoding? Check the [Amber troubleshooting guide](https://docs.amberframework.org/amber/troubleshooting), post a [tagged message on Stack Overflow](https://stackoverflow.com/questions/tagged/amber-framework), or visit [Amber on Gitter](https://gitter.im/amberframework/amber).
-
-Using Docker? Please check [Amber Docker guides](https://docs.amberframework.org/amber/guides/docker).
-
-## Tests
-
-To run the test suite:
-
-```
-crystal spec
-```
-
-## Contributing
-
-1. Fork it ( https://github.com/your-github-user/agentc_app_template_oss/fork )
-2. Create your feature branch ( `git checkout -b my-new-feature` )
-3. Commit your changes ( `git commit -am 'Add some feature'` )
-4. Push to the branch ( `git push origin my-new-feature` )
-5. Create a new Pull Request
-
-## Contributors
-
-- [your-github-user](https://github.com/your-github-user) crimson-knight - creator, maintainer
