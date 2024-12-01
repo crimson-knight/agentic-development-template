@@ -13,12 +13,7 @@ require "./logger"
 require "./i18n"
 require "./database"
 require "./initializers/**"
-
-# uncomment these 4 lines to enable plugins
-# require "../plugins/plugins"
-
-# Start Generator Dependencies: Don't modify.
-# End Generator Dependencies
+require "asset_pipeline"
 
 require "../src/controllers/application_controller"
 require "../src/controllers/**"
