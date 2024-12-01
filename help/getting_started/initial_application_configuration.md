@@ -23,6 +23,7 @@ You should have received a prompt asking you to perform the initial application 
 7. Update the `config/database.yml` file so that the `user` field in the `default` section is the local username returned by the `whoami` command if the user is on MacOS, or the username `postgres` if the user is on Linux.
 8. Run the `crystal build sam.cr` command and then run `./sam db:create && ./sam db:migrate && ./sam db:seed` to create the database, run migrations, and seed the database.
 9. Update the `src/views/home/index.ecr` file so that the `<h2>` tag contains the application name in proper title case.
+10. Run the `shards install` command to install the dependencies.
 
 
 ## Confirming Everthing Works

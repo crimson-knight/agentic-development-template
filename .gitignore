@@ -11,3 +11,5 @@ production.yml
 /bin/
 /node_modules
 /public/dist
+sam
+sam.dwarf
