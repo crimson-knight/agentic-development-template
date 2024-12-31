@@ -25,7 +25,21 @@ backend.formatter = Log::Formatter.new do |entry, io|
   io << " |"
   io << " (#{entry.severity})" if entry.severity > Log::Severity::Debug
   io << " "
-  io << entry.message
+  if entry.message.present?
+    io << entry.message
+  end
+  if entry.exception
+    io << " "
+    io << entry.exception
+  end
+  if entry.data
+    io << " "
+    io << entry.data
+  end
+  if entry.context
+    io << " "
+    io << entry.context
+  end
 end
 
 Log.builder.clear
