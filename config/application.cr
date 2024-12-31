@@ -17,4 +17,6 @@ require "asset_pipeline"
 
 require "../src/controllers/application_controller"
 require "../src/controllers/**"
+require "../src/models/**"
+require "../src/models/personas/**"
 require "./routes"
