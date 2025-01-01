@@ -4,8 +4,9 @@ class ApplicationController < Amber::Controller::Base
   include JasperHelpers
   LAYOUT = "application.ecr"
 
-  def current_user : Persona | Nil
-    Persona.find(session["user_id"])
+  # Scoped down to regular `User`, use `Persona`
+  def current_user : User | Nil
+    context.current_user
   end
 
   def logged_in?

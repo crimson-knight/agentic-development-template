@@ -13,7 +13,6 @@ load_dependencies "jennifer"
 #   puts "ping"
 # end
 
-
 desc "db:seed - Performs seeding of the database. This is blank until you complete it."
 task "db:seed" do
   puts "db:seed ran, but you need to complete it."

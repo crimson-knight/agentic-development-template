@@ -16,7 +16,7 @@ describe LoginController do
       end
     end
   end
-  
+
   describe "LoginController#destroy" do
     it "renders the view" do
     end

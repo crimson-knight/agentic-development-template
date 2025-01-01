@@ -13,3 +13,4 @@ production.yml
 /public/dist
 sam
 sam.dwarf
+/public/javascript/

@@ -6,3 +6,6 @@ require "../config/application"
 
 # Example:
 # User.create(name: "example", email: "ex@mple.com")
+# Test user for auth
+
+PersonaTest.create(email: "admin@example.com", password: "password")

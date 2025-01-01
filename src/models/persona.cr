@@ -10,7 +10,7 @@ class Persona < Jennifer::Model::Base
     email: {type: String, default: ""},
     password_digest: {type: String, default: ""},
     password: Password,
-    password_confirmation: { type: String?, virtual: true },
+    password_confirmation: {type: String?, virtual: true},
     last_login_at: {type: Time?, default: nil},
     type: {type: String, default: "User"}
   )
