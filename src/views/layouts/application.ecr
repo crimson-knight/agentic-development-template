@@ -18,13 +18,14 @@
       import { Application, Controller } from "@hotwired/stimulus"
       
       // Import each controller below here using the syntax: import ControllerName from "ControllerName"
-
+      import LoginController from "login_controller"
       // End new controller imports
 
+      // Start the Stimulus application
       window.Stimulus = Application.start()
 
       // Register each controller below here using the syntax: Stimulus.register("controller-name", ControllerName)
-      
+      Stimulus.register("login", LoginController)
       // End new controller registrations
 
       // -- Initialize any other JavaScript below here --

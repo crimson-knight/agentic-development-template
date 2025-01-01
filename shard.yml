@@ -46,7 +46,8 @@ dependencies:
 
   asset_pipeline:
     github: amberframework/asset_pipeline
-    version: ~> 0.34.0
+    # version: ~> 0.34.0
+    branch: main
 
 development_dependencies:
   ameba:

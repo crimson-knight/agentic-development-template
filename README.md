@@ -42,7 +42,7 @@ Never heard of some of these things? _Technically dangerous_ people don't let th
 
 ## Nerdy Technical Details
 
-_You can skip this section if you're not interested in the nitty gritty details._ This application template uses a specific set of highly capable, strongly opinionated and enterprise tested tools and design patterns. Here are some of the top level ones that most nerds love to talk about.
+_You can skip this section if you're not interested in the nitty-gritty details._ This application template uses a specific set of highly capable, strongly opinionated and enterprise tested tools and design patterns. Here are some of the top level ones that most nerds love to talk about.
 
 - Underlying language: [Crystal](https://crystal-lang.org/) - The programming language used to build this application.
 - Web app framework: [Amber](https://amberframework.org) - The web app framework used to build this application.
@@ -50,7 +50,7 @@ _You can skip this section if you're not interested in the nitty gritty details.
 - Frontend Styling: [CSS3](https://developer.mozilla.org/en-US/docs/Web/CSS) - The styling language used to style this application's frontend. Nothing special here actually.
 - Frontend Framework: [HTML5](https://developer.mozilla.org/en-US/docs/Web/HTML) - The markup language used to build this application's frontend. Nothing special here actually.
 - Frontend JavaScript: [StimulusJS](https://stimulus.hotwired.dev/) - The JavaScript library used to add interactivity to this application's frontend.
-- AI inference interface: [Llamero](https://github.com/crimson-knight/llamero) - The library used to interface with the AI models that generate code for this application.
+- AI inference interface: [Llamero](https://github.com/crimson-knight/llamero) - The library used to interface with the AI models for this application.
 
 # Getting Started
 For the rest of this section, it is assumed that you have Cursor installed and whichever account level you chose allows you to use the Composer and `agent` sidebar features.
@@ -72,5 +72,6 @@ If you're not sure which document to look with, you can always have the agent lo
 
 1. If you've just forked this repo, you'll want to start by updating the app details to the name of your project.
   In the cursor sidebar, CMD+SHIFT+O (the letter O, not the number `0`) and then type `I want you to perform @files/initial_application_configuration using the application name <your application name> and my github username <`.
+2. Now, let the magic BEGIN!
 
 

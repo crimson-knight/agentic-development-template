@@ -8,12 +8,13 @@
 # affect the behavior of the application.
 
 require "amber"
+require "asset_pipeline"
+
 require "./settings"
 require "./logger"
 require "./i18n"
 require "./database"
 require "./initializers/**"
-require "asset_pipeline"
 
 require "../src/controllers/application_controller"
 require "../src/controllers/**"

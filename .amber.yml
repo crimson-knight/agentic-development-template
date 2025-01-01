@@ -17,6 +17,7 @@ watch:
       - ./config/**/*.cr
       - ./config/environments/*.yml
       - ./src/**/*.cr
+      - ./src/javascript/*.js
       - ./javascript/**/*.js
       - ./src/**/*.ecr
       - ./src/locales/*.yml
