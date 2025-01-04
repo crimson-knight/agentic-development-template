@@ -3,8 +3,9 @@
 <%# TODO: Add error messages to display here %>
 
 <form action="/login" method="POST" data-controller="login" data-action="submit->login#handleSubmit">
-  <label for="username">Username (Email Address):</label>
-  <input type="email" id="username" name="username" required data-login-target="username" data-action="input->login#handleInput">
+  <%= csrf_tag %>
+  <label for="email">Email Address:</label>
+  <input type="email" id="email" name="email" required data-login-target="email" data-action="input->login#handleInput">
 
   <label for="password">Password:</label>
   <input type="password" id="password" name="password" required data-login-target="password" data-action="input->login#handleInput">

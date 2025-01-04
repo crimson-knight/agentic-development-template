@@ -5,7 +5,7 @@ class ApplicationController < Amber::Controller::Base
   LAYOUT = "application.ecr"
 
   # Scoped down to regular `User`, use `Persona`
-  def current_user : User | Nil
+  def current_user : Persona | Nil
     context.current_user
   end
 

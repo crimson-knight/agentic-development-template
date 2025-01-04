@@ -9,10 +9,10 @@ Amber::Server.configure do
     plug Amber::Pipe::CSRF.new
 
     # Add the CurrentUserPipe to handle authentication
-    plug CurrentUserPipe.new
   end
-
+  
   pipeline :auth do
+    plug CurrentUserPipe.new
     plug AuthenticateUser.new
   end
 
@@ -37,6 +37,7 @@ Amber::Server.configure do
 
   routes :auth do
     # Routes only available to authenticated users
+    get "/dashboard", DashboardController, :index
   end
 
   routes :api do

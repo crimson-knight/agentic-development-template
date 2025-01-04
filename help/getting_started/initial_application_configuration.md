@@ -26,6 +26,7 @@ You should have received a prompt asking you to perform the initial application 
 8. Run the `shards install` command to install the dependencies.
 9. Run the `crystal build sam.cr` command and then run `./sam db:create && ./sam db:migrate && ./sam db:seed` to create the database, run migrations, and seed the database.
 10. Update the `src/views/home/index.ecr` file so that the `<h2>` tag contains the application name in proper title case.
+11. Compile `sam.cr` with `crystal build sam.cr` and run it with `./sam db:setup`, there should be no errors in the terminal output.
 
 
 ## Confirming Everthing Works

@@ -9,6 +9,8 @@ class AddUsersWithAuthentication < Jennifer::Migration::Base
       t.date :last_login_at
       t.timestamps
     end
+
+    add_index :personas, :email
   end
 
   def down

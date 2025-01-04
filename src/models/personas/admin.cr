@@ -1,4 +1,7 @@
-# Inherits from User
+# Inherits from Persona
 class Admin < Persona
-  # Use the `mapping()` macro to define any attributes unique to this class
+  table_name :personas
+  
+  # All attributes must be mapped on the Persona class
 end
+
