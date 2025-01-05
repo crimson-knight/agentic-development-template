@@ -1,6 +1,6 @@
 require "jennifer/model/authentication"
 
-class Persona < Jennifer::Model::Base
+class Persona < BaseModel
   include Jennifer::Model::Authentication
 
   with_authentication

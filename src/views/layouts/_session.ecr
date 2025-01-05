@@ -1,9 +1,9 @@
-<%- if (current_user = context.current_user) %>
+<%- if logged_in? %>
   <%- active = context.request.path == "/profile" ? "active" : "" %>
   <li class="nav-item <%= active %>">
-    <a class="nav-link" href="/profile"><%= current_user.email %></a>
+    <a class="nav-link" href="/profile"><%= current_user.try(&.email) %></a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="/signout">Sign Out</a>
+    <a class="nav-link" href="/logout">Sign Out</a>
   </li>
 <%- end %>

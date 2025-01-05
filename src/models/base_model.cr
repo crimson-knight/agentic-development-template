@@ -1,4 +1,4 @@
 require "jennifer/model/base"
 
-abstract class MyBaseModel < Jennifer::Model::Base
+abstract class BaseModel < Jennifer::Model::Base
 end

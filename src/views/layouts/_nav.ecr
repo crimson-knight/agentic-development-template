@@ -3,9 +3,7 @@
   <a href="/" class="nav-link">Home</a>
 </li>
 <li class="nav-item">
-  <% if current_user %>
-    <a href="/logout" class="nav-link">Logout</a>
-  <% else %>
+  <% if !logged_in? %>
     <a href="/login" class="nav-link">Login</a>
   <% end %>
 </li>

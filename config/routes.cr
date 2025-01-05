@@ -32,12 +32,12 @@ Amber::Server.configure do
     get "/", HomeController, :index
     get "/login", LoginController, :new
     post "/login", LoginController, :create
-    get "/logout", LoginController, :destroy
   end
-
+  
   routes :auth do
     # Routes only available to authenticated users
     get "/dashboard", DashboardController, :index
+    get "/logout", LoginController, :destroy
   end
 
   routes :api do
