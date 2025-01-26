@@ -1,5 +1,5 @@
 Amber::Server.configure do
-  pipeline :web, :auth do
+  pipeline :public, :authenticated do
     # Plug is the method to use connect a pipe (middleware)
     # A plug accepts an instance of HTTP::Handler
     # plug Amber::Pipe::ClientIp.new(["X-Forwarded-For"])
@@ -11,7 +11,7 @@ Amber::Server.configure do
     # Add the CurrentUserPipe to handle authentication
   end
   
-  pipeline :auth do
+  pipeline :authenticated do
     plug CurrentUserPipe.new
     plug AuthenticateUser.new
   end
@@ -28,16 +28,16 @@ Amber::Server.configure do
     plug Amber::Pipe::Static.new("./public")
   end
 
-  routes :web do
-    get "/", HomeController, :index
-    get "/login", LoginController, :new
-    post "/login", LoginController, :create
+  routes :public do
+    get "/", Public::HomeController, :index
+    get "/login", Public::SessionController, :new
+    post "/login", Public::SessionController, :create
   end
   
-  routes :auth do
+  routes :authenticated do
     # Routes only available to authenticated users
-    get "/dashboard", DashboardController, :index
-    get "/logout", LoginController, :destroy
+    get "/dashboard", Authenticated::DashboardController, :index
+    get "/logout", Authenticated::SessionController, :destroy
   end
 
   routes :api do

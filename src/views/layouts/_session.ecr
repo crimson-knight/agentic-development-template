@@ -1,7 +1,7 @@
 <%- if logged_in? %>
   <%- active = context.request.path == "/profile" ? "active" : "" %>
   <li class="nav-item <%= active %>">
-    <a class="nav-link" href="/profile"><%= current_user.try(&.email) %></a>
+    <a class="nav-link" href="/profile"><%= get_current_user.try(&.email) %></a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="/logout">Sign Out</a>

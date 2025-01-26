@@ -17,101 +17,14 @@ If you do not have all of the required information, please ask the user for the 
     1a. It will be named the pluralized version of the resource name if a resource was provided `src/controllers/#{pluralized_resource_name}_controller.cr`
     1b. It will be named the controller name if no resource was provided `src/controllers/#{controller name}_controller.cr`
     1c. The controller will inherit from `ApplicationController`, unless the route is already namespaced to a specific parent controller.
-
-The file contents should follow the template, where everything in the `{{}}` should be replaced with the appropriate values as they are described:
-
-```crystal
-class {{controller_name}}Controller < ApplicationController
-  getter {{singular_resource_name}} = {{singular_resource_name_from_app_models}}.new
-
-  before_action do
-    only [:show, :edit, :update, :destroy] { set_{{pluralized_resource_name}} }
-  end
-
-  def index
-    {{pluralized_resource_name}} = {{singular_resource_name_from_app_models}}.all
-    respond_with do
-      html { render "index.ecr" }
-      json { {{pluralized_resource_name}}.to_json }
-    end
-  end
-
-  def show
-    respond_with do
-      html { render "show.ecr" }
-      json { {{singular_resource_name}}.to_json }
-    end
-  end
-
-  def new
-    respond_with do
-      html { render "new.ecr" }
-      json { {{singular_resource_name}}.to_json }
-    end
-  end
-
-  def edit
-    respond_with do
-      html { render "edit.ecr" }
-      json { {{singular_resource_name}}.to_json }
-    end
-  end
-
-  def create
-    {{singular_resource_name}} = {{singular_resource_name_from_app_models}}.new {{singular_resource_name}}_params.validate!.to_h
-    if {{singular_resource_name}}.save
-      respond_with do
-        html { redirect_to action: :index, flash: {"success" => "{{singular_resource_name}} has been created."} }
-        json { %({"status": "success", "message": "{{singular_resource_name}} has been created."}) }
-      end
-    else
-      respond_with do
-        html { flash[:danger] = "Could not create {{singular_resource_name}}!"; render "new.ecr" }
-        json { %({"status": "error", "message": "Could not create {{singular_resource_name}}!"}) }
-      end
-    end
-  end
-
-  def update
-    {{singular_resource_name}}.set_attributes {{singular_resource_name}}_params.validate!.to_h
-    if {{singular_resource_name}}.save
-      respond_with do
-        html { redirect_to action: :index, flash: {"success" => "{{singular_resource_name}} has been updated."} }
-        json { %({"status": "success", "message": "{{singular_resource_name}} has been updated."}) }
-      end
-    else
-      respond_with do
-        html { flash[:danger] = "Could not update {{singular_resource_name}}!"; render "edit.ecr" }
-        json { %({"status": "error", "message": "Could not update {{singular_resource_name}}!"}) }
-      end
-      render "edit.ecr"
-    end
-  end
-
-  def destroy
-    {{singular_resource_name}}.destroy
-    respond_with do
-      html { redirect_to action: :index, flash: {"success" => "{{singular_resource_name}} has been deleted."} }
-      json { {status: "success", message: "{{singular_resource_name}} has been deleted."}.to_json }
-    end
-  end
-
-  private def {{singular_resource_name}}_params
-    params.validation do
-      # Each non-nillable attribute from the app/models/#{singular_resource_name}.cr file should be required here.
-      required {{non-nillable attributes from app/models/#{singular_resource_name}.cr}}
-    end
-  end
-
-  private def set_{{singular_resource_name}}
-    @{{singular_resource_name}} = {{singular_resource_name_from_app_models}}.find!(params[:id])
-  end
-end
-```
+    1d. All controllers that inherit from `ApplicationController` have access to a `current_user` method that returns the current `User` object, this must be used in a conditional assignment to remove the `Nil` from the type union. Another helper method is `logged_in?` that returns a boolean if the user is not logged in.
+    1e. If creating a RESTful controller, use the `help/generators/templates/restful_controller.md` file instructions and template.
+    1f. If create a non-RESTful controller, use the `help/generators/templates/non_restful_controller.md` file instructions and template.
 
 2. Create the route in the `config/routes.cr` file
   2a. If a resource is provided, the route will be namespaced to the resource using the `resources` method, under the `web` route grouping.
   2b. If no resource is provided, the route will be added to the `ApplicationController` using the `get`, `post`, `put`, `patch`, or `delete` methods, defaulting to `get` if the user does not specify in the prompt.
+  2c. If a route must be restricted to authenticated users, the route will be added to the `auth` route grouping. Authentication is already handled for all controllers in this route group, do not add a `before_action` to authenticate the user.
 
 ```crystal
   routes :web do
@@ -124,6 +37,7 @@ end
 ```
 
 3. Create the views in the `src/views/#{controller_name}` directory
+  3a. The current user can 
 
 ```crystal
 # src/views/#{controller_name}/_form.ecr
@@ -226,3 +140,5 @@ end
   <a class="nav-link" href="/{{pluralized_resource_name}}">{{pluralized_resource_name}}</a>
 </li>
 ```
+
+5. Review the help/generators/validations/controller_methods_validation.md file and your controller file to ensure that all of the necessary methods are implemented correctly.

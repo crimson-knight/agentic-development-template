@@ -1,7 +1,5 @@
-require "log"
-
-class LoginController < ApplicationController
-  getter persona = Persona.new
+class Public::SessionController < ApplicationController
+  getter user = User.new
   property valid_email : String = ""
   property valid_password : String = ""
 
@@ -10,7 +8,7 @@ class LoginController < ApplicationController
   end
 
   def new
-    persona = Persona.new
+    user = User.new
     render("new.ecr")
   end
 
@@ -44,12 +42,6 @@ class LoginController < ApplicationController
     respond_with do
       json { %({"redirect_url": "/login"})}
     end
-  end
-
-  def destroy
-    session.delete(:persona_id)
-    flash[:info] = "Logged out. See ya later!"
-    redirect_to "/"
   end
 
   private def validate_params
