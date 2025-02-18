@@ -6,6 +6,6 @@ class Authenticated::BaseAuthenticatedController < ApplicationController
   end
 
   private def set_current_user
-    @current_user = get_current_user
+    @current_user = context.current_user || raise "No current user found"
   end
 end

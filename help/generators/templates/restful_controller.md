@@ -1,6 +1,8 @@
 # RESTful Controller Template & Instructions
 
-The file contents should follow the template, where everything in the `{{}}` should be replaced with the appropriate values as they are described:
+1. Create a notes file for this controller to save details you'll need to remember later, specifically all of the details about the kind of controller this is and the methods you need to make.
+
+2. The file contents should follow the template, where everything in the `{{}}` should be replaced with the appropriate values as they are described:
 
 ```crystal
 class {{controller_name}}Controller < ApplicationController
@@ -8,6 +10,7 @@ class {{controller_name}}Controller < ApplicationController
 
   # before_action and after_action accept a block as their only parameter.
   before_action do
+    # Always use this syntax for choosing which actions need to set the resource.
     only [:show, :edit, :update, :destroy] { set_{{pluralized_resource_name}} }
   end
 

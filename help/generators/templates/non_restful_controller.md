@@ -1,42 +1,46 @@
 # Non-RESTful Controller Template & Instructions
 
-Non-RESTful controllers are used for actions that do not fit the standard CRUD operations, such as login, logout, user profiles, or other custom business processes.
+Non-RESTful controllers are used for actions that do not fit the standard CRUD operations, such as login, logout, user profiles, etc.
 
-Important details:
-- All controllers have access to a `get_current_user` method that returns the current `User` object, this must be used in a conditional assignment to remove the `Nil` from the type union. You must include this if you need to use the `current_user` in the controller.
-```crystal
-# Assignment must happen as part of the conditional statement
-if current_user = get_current_user
-  # The current_user is not `Nil`, we can safely use it, write any code requiring the `current_user` within this block.
-end
-```
-
-- Ambers pipelines always handle user authentication and authorization, do not add any additional authentication or authorization logic to the controller.
-- The `respond_with` method is used to handle the response to the user in multiple formats, supporting HTML, JSON, XML and TXT. Default to using HTML and JSON.
 - Always validate the presence of a param before trying to fetch from the database for any records that rely on the param.
+- Your controller should always be namespaced to `Authenticated` or `Public` depending on the route grouping or the action needing to be taken.
+- Your controller should inherit from `ApplicationController` if it is public and `BaseAuthenticatedController` if it is authenticated.
+
+Remind yourself of the controller information that you need from the notes file.
 
 The file contents should follow the template, where everything in the `{{}}` should be replaced with the appropriate values as they are described:
 
 ```crystal
-class {{controller_name}}Controller < ApplicationController
+class {{controller_name}}Controller < {{namespace}}Controller
 
   def your_action_name
+    # All controllers have access to `get_current_user`. This method returns User or Nil, so you _must_ assign it to a variable to drop the nil type.
+    # Assignment must happen as part of the conditional statement
     if current_user = get_current_user
-      # The current_user is not `Nil`, we can safely use it, write any code requiring the `current_user` within this block.
-    end
-  end
+      # The current_user is not `Nil`, we can safely use it, write any code requiring the current user within this block.
 
-  def create
-    {{singular_resource_name}} = {{singular_resource_name_from_app_models}}.new {{singular_resource_name}}_params
-    if {{singular_resource_name}}.save
+      # Do your business logic here
+
+      # All variables assigned within this action will be available in the view.
+      my_example_variable = "this variable will be usable in the view by default"
+
       respond_with do
-        html { redirect_to action: :index, flash: {"success" => "{{singular_resource_name}} has been created."} }
-        json { %({"status": "success", "message": "{{singular_resource_name}} has been created."}) }
+        html do 
+          flash[:success] = "a success message."
+          # The #render method signature is `render("file_name.ecr") where the file name is relative to the `src/views/{{namespace}}/{{controller_name}}/` directory.
+          # example:
+          # src/views/authenticated/my_controller_name/my_action_name.ecr
+          render("my_action_name.ecr")
+        end
+        json { %({"status": "success", "message": "a success message."}) }
       end
     else
       respond_with do
-        html { flash[:danger] = "Could not create {{singular_resource_name}}!"; render "new.ecr" }
-        json { %({"status": "error", "message": "Could not create {{singular_resource_name}}!"}) }
+        html do 
+          flash[:danger] = "a danger message."
+          render("view_name_for_this_action.ecr")
+        end
+        json { %({"status": "error", "message": "a danger message."}) }
       end
     end
 
@@ -44,37 +48,13 @@ class {{controller_name}}Controller < ApplicationController
     rescue e
       Log.error(e)
       respond_with do
-        html { flash[:danger] = "Could not create {{singular_resource_name}}!"; render "new.ecr" }
-        json { %({"status": "error", "message": "Could not create {{singular_resource_name}}!"}) }
+        html do
+          flash[:danger] = "a danger message."
+          render("view_name_for_this_action.ecr")
+        end
+        json { %({"status": "error", "message": "a danger message."}) }
       end
     end
-  end
-
-  def update
-    {{singular_resource_name}}.set_attributes {{singular_resource_name}}_params
-    if {{singular_resource_name}}.save
-      respond_with do
-        html { redirect_to action: :index, flash: {"success" => "{{singular_resource_name}} has been updated."} }
-        json { %({"status": "success", "message": "{{singular_resource_name}} has been updated."}) }
-      end
-    else
-      raise "Could not update {{singular_resource_name}}"
-    end
-    rescue e
-      Log.error(e)
-      respond_with do
-        html { flash[:danger] = "Could not update {{singular_resource_name}}!"; render "edit.ecr" }
-        json { %({"status": "error", "message": "Could not update {{singular_resource_name}}!"}) }
-      end
-    end
-  end
-
-  # Always validate params presence using the `required` method, and return them as a hash. Any additional validation steps need to be added in this method
-  private def {{singular_resource_name}}_params
-    params.validation do
-      # Each non-nillable attribute from the app/models/#{singular_resource_name}.cr file should be required here.
-      required {{non-nillable attributes from app/models/#{singular_resource_name}.cr}}
-    end.to_h
   end
 end
 ```
