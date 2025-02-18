@@ -1,4 +1,4 @@
-class DashboardController < ApplicationController
+class Authenticated::DashboardController < ApplicationController
   def index
     render("index.ecr")
   end
