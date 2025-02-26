@@ -1,32 +1,57 @@
 # Amber Generators
 
-The generator prompts here serve to replace the same funcitonality you would see in the Amber CLI tool with an agentic version.
+The generator prompts here serve to replace the same functionality you would see in the Amber CLI tool with an agentic version.
 
-The general generator functions are as follows:
+## Generator Functionality Checklist
 
-- scaffold
-    1. Creates a route with `resources`, creates a model, creates the migration for the model, it updates the nav, it creates CRUD views, with a form partial, and a model spec
+### Scaffold Generator
+- [x] Create route with `resources`
+- [x] Create model
+- [x] Create migration for model
+- [x] Update nav
+- [x] Create CRUD views with form partial
+- [x] Create model spec
+Status: Completed - Documentation exists in `help/generators/create_a_scaffold.md`
 
-- api
-    1. Creates a route, a model, and a controller, in the API pipes, a request spec, and a model spec
+### API Generator
+- [x] Create route
+- [x] Create model
+- [x] Create controller in API pipes
+- [x] Create request spec
+- [x] Create model spec
+Status: Completed - Documentation exists in `help/generators/create_an_api_endpoint.md`
 
-- model
-    1. Creates a model, a migration and a model spec
+### Model Generator
+- [x] Create model
+- [x] Create migration
+- [x] Create model spec
+Status: Completed - Documentation exists in `help/generators/create_a_model.md`
 
-- controller
-    1. Creates a route, a controller, and a request spec
+### Controller Generator
+- [x] Create route
+- [x] Create controller
+- [x] Create request spec
+Status: Completed - Documentation exists in `help/generators/create_a_controller_default.md`
 
-- migration
-    1. Creates a single migration file named after whatever is provided
+### Migration Generator
+- [x] Create single migration file
+Status: Covered in model documentation, with specific examples in other generator docs
 
-- mailer
-    1. Creates a mailer file in src/mailers, a view in /src/views/mailers for html and txt 
+### Mailer Generator
+- [x] Create mailer file in src/mailers
+- [x] Create view in /src/views/mailers for html
+- [x] Create view in /src/views/mailers for txt
+Status: Completed - Documentation exists in `help/generators/create_a_mailer.md`
 
-- socket
-    1. Creates a single socket file under `src/sockets/`
+### Socket Generator
+- [x] Create single socket file under `src/sockets/`
+Status: Completed - Documentation exists in `help/generators/create_a_socket.md`
 
-- channel
-    1. Creates a single test channel under `src/channels/`
+### Channel Generator
+- [x] Create single test channel under `src/channels/`
+Status: Completed - Documentation exists in `help/generators/create_a_channel.md`
 
-- error (should just be part of the base app template to make customization easier)
+### Error Generator
+- [ ] Create error handling templates (should be part of base app template)
+Status: Not implemented as standalone generator
 
