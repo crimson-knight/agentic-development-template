@@ -1,4 +1,4 @@
-# AgentC App Template OSS Version 1.0.0
+# AgentC App Template OSS Version v1.0.0-alpha
 
 [![Amber Framework](https://img.shields.io/badge/using-amber_framework-orange.svg)](https://amberframework.org)
 
@@ -6,13 +6,13 @@ This is a project written using [Amber](https://amberframework.org) and [Crystal
 
 This application template is meant to get you started using Amber to create AI powered modern applications that take advantage of modern hardware.
 
-By using AI, and clever prompt engineering, this template is meant to empower _technically dangerous_ people.
+By using AI, and "clever" prompt engineering, this template is meant to empower _technically dangerous_ people.
 
 ## Are you a _technically dangerous_ person?
 
 You may be a _technically dangerous_ person if you:
 - Feel comfortable trying new apps out. YouTube or content creator videos are a great source of ideas and inspiration.
-- Maybe you've tried no-code tools ranging from Zapier to Webflow and thought "this is great, but I want more than what this kind of tool can do".
+- Maybe you've tried no-code tools ranging from Zapier to Webflow and thought "this is great, but I want more customization than what this kind of tool can do".
 - You're hyped about what AI means for changing how we write applications.
 - You're willing to question long-held beliefs about how software is built.
 - You have technical ideas, but you're just not a "software engineer".

@@ -16,113 +16,44 @@ If there is any missing information or vague information, prompt the user for th
 
 ## Steps
 
-1. Create the channel file in `src/channels` directory using the following template:
+1. Create the channel file in `src/channels` directory
+   - The file should be named with the pattern `{channel_name}_channel.cr`
+   - Define a class that inherits from `Amber::WebSockets::Channel`
+   - Implement the required channel methods: `handle_joined`, `handle_message`, and `handle_leave`
+   - Add any custom message handling logic needed
 
-```crystal
-# src/channels/{{channel_name}}_channel.cr
-class {{channel_name}}Channel < Amber::WebSockets::Channel
-  def handle_joined(client_socket, msg)
-    # Called when a client joins the channel
-    # msg contains any data sent by the client when joining
-    
-    # Example: Broadcasting join message to all clients
-    rebroadcast!(msg, "user:joined")
-  end
+2. Update the channel configuration in `config/initializers/socket.cr`
+   - Add the channel to the WebSockets configuration
+   - Configure any channel-specific settings
 
-  def handle_message(client_socket, msg)
-    # Called when a message is received from a client
-    # msg contains the message data
-    
-    # Example: Broadcasting message to all clients
-    rebroadcast!(msg)
-  end
+3. Create client-side JavaScript to interact with the channel
+   - Include channel subscription logic
+   - Implement message handling for different event types
+   - Add message sending functionality
 
-  def handle_leave(client_socket)
-    # Called when a client leaves the channel
-    # Perform any cleanup or notification
-    
-    # Example: Broadcasting leave message
-    rebroadcast!({event: "user:left"})
-  end
+For specific implementation details, see the template examples in `help/generators/templates/create_a_channel/`.
 
-  private def rebroadcast!(msg, event = "message")
-    broadcast!({
-      event: event,
-      data: msg,
-      timestamp: Time.utc.to_s
-    }.to_json)
-  end
-end
-```
+## Channel vs Socket
 
-2. Update the channel configuration in `config/initializers/socket.cr`:
+1. Understanding the difference:
+   - Sockets handle the raw WebSocket connection
+   - Channels provide topic-based communication over WebSockets
+   - A single Socket can support multiple Channels
 
-```crystal
-Amber::WebSockets.configure do |socket|
-  socket.add_channel "{{channel_name}}", {{channel_name}}Channel
-end
-```
+2. When to use Channels:
+   - For pub/sub functionality
+   - When clients need to subscribe to specific topics
+   - For broadcasting messages to groups of clients
 
-3. Add the channel subscription to your JavaScript client:
+## Important Notes
 
-```javascript
-// Example client-side subscription
-const socket = new WebSocket("ws://localhost:3000/{{channel_name}}")
+1. Channel authentication and authorization
+   - Validate client identity in `handle_joined`
+   - Implement topic-based authorization
+   - Secure sensitive channels from unauthorized access
 
-socket.onopen = () => {
-  // Join the channel
-  socket.send(JSON.stringify({
-    event: "join",
-    topic: "{{channel_name}}:*",
-    payload: { user: "example_user" }
-  }))
-}
-
-socket.onmessage = (event) => {
-  const message = JSON.parse(event.data)
-  
-  switch(message.event) {
-    case "user:joined":
-      console.log("User joined:", message.data)
-      break
-    case "message":
-      console.log("New message:", message.data)
-      break
-    case "user:left":
-      console.log("User left:", message.data)
-      break
-  }
-}
-
-// Example: Sending a message to the channel
-function sendMessage(content) {
-  socket.send(JSON.stringify({
-    event: "message",
-    topic: "{{channel_name}}:*",
-    payload: { content }
-  }))
-}
-```
-
-## Common Customization Points
-
-1. Message Handling
-   - Add custom message types
-   - Implement message filtering
-   - Add message persistence
-
-2. Authorization
-   - Add channel join authorization
-   - Implement user-specific channels
-   - Add message permission checks
-
-3. Broadcasting
-   - Customize broadcast targets
-   - Add message transformations
-   - Implement private messages
-
-4. State Management
-   - Track channel members
-   - Maintain channel state
-   - Handle reconnections
+2. Message format standardization
+   - Define a consistent message format
+   - Include message types and timestamps
+   - Structure data for easy client-side processing
 ``` 
