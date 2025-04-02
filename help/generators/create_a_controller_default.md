@@ -14,7 +14,7 @@ If you do not have all of the required information, please ask the user for the 
 ## Create The Necessary Files
 
 1. Create the controller file in the `src/controllers` directory, 
-    1a. It will be named the pluralized version of the resource name if a resource was provided `src/controllers/{namespace}/#{pluralized_resource_name}_controller.cr`
+    1a. It will be named the pluralized wording or phrasing of the resource name, if a resource was provided, the file path is `src/controllers/{namespace}/#{pluralized_resource_name}_controller.cr`
     1b. It will be named the controller name if no resource was provided `src/controllers/{namespace}/#{controller name}_controller.cr`
     1c. The controller will be namespaced to either `Authenticated` or `Public` depending on the route grouping or the action needing to be taken.
     1d. Creates a notes file that contains the summary of the details for this controller based on the requirements listed so far.
