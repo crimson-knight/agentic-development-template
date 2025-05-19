@@ -20,13 +20,12 @@ class Public::SessionController < ApplicationController
 
     if user_authed_successfully
       session[:user_id] = user_authed_successfully.id
-      
+
       flash[:info] = "Successfully logged in!"
       respond_with do
         html { redirect_to "/dashboard" }
         json { %({"redirect_url": "/dashboard"}) }
       end
-
     else
       flash[:danger] = "There was a problem with the email or password. Please try again."
       respond_with do
@@ -35,12 +34,13 @@ class Public::SessionController < ApplicationController
       end
     end
 
-  # The user was not found, this catches the error and handles the error message
+    # The user was not found, this catches the error and handles the error message
+
   rescue e
     flash[:danger] = "There was an error while trying to log in. Please try again."
     Log.error { e.message }
     respond_with do
-      json { %({"redirect_url": "/login"})}
+      json { %({"redirect_url": "/login"}) }
     end
   end
 
@@ -56,4 +56,3 @@ class Public::SessionController < ApplicationController
     end
   end
 end
-

@@ -17,9 +17,9 @@ desc "db:seed - Performs seeding of the database."
 namespace "db" do
   task "seed" do
     # Create a test user for authentication
-    Admin.create({ :email => "admin@example.com", :password => "AdminPassword", :password_confirmation => "AdminPassword", :api_key => "test-api-key", :api_secret => "test-api-secret" })
-    User.create({ :email => "user@example.com", :password => "UserPassword", :password_confirmation => "UserPassword", :api_key => "test-api-key", :api_secret => "test-api-secret" })
-    Api.create({ :email => "api@example.com", :password => "ApiPassword", :password_confirmation => "ApiPassword", :api_key => "test-api-key", :api_secret => "test-api-secret" })
+    Admin.create({:email => "admin@example.com", :password => "AdminPassword", :password_confirmation => "AdminPassword", :api_key => "test-api-key", :api_secret => "test-api-secret"})
+    User.create({:email => "user@example.com", :password => "UserPassword", :password_confirmation => "UserPassword", :api_key => "test-api-key", :api_secret => "test-api-secret"})
+    Api.create({:email => "api@example.com", :password => "ApiPassword", :password_confirmation => "ApiPassword", :api_key => "test-api-key", :api_secret => "test-api-secret"})
 
     # Add any additional seed data here
   end

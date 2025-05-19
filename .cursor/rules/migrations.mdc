@@ -1,0 +1,15 @@
+---
+description: 
+globs: db/migrations/**,db/structure.sql
+alwaysApply: false
+---
+All migration files are written using `Jennifer::Migration::Base`.
+
+You will create the migration name using the Sam CLI tool, the command is: `./sam g migration <underscored_migration_name_here>`
+
+This will output the name of the file that was created. 
+Open that file to then create the migration you need.
+
+Refer to the documentation for what is usable within the migration.
+
+Validate that the migration is going to compile by running `crystal build sam.cr`

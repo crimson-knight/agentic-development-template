@@ -1,0 +1,16 @@
+---
+description: 
+globs: config/initializers/asset_pipeline.cr
+alwaysApply: false
+---
+This configuration file is used to create an `import_map` using the browser ImportMap standard for javascript.
+
+Use the primary `import_map` is what will group all of the javascript resources together.
+
+imports: this is a url that can be relative to your application, or a full CDN path to an esm module
+scopes: this is a feature that can help rescrict which librarys are loaded. The keys here are relative paths in your application.
+preloading: any import that's added with preload: true will also render a tag to have the module preloaded
+
+Use the `add_import()` method to add entries.
+
+If you are adding a StimulusJS controller, then the `src/views/layouts/application.ecr` template needs to have the <script type="module"> section updated so that the controller has an `import` statement for it and there is a `Stimulus.register()` call added for the new controller.

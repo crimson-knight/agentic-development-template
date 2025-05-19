@@ -6,6 +6,7 @@
 JS_OUTPUT_PATH = Path["public/javascript"]
 
 FRONT_LOADER = AssetPipeline::FrontLoader.new(js_source_path: Path["src/javascript"], js_output_path: JS_OUTPUT_PATH) do |import_maps|
+  # Create our primary import map for the application.
   import_map = AssetPipeline::ImportMap.new("application", Path["/javascript"]) # This path must match the js_output_path above, relative to the `/public` directory
 
   import_map.add_import("@hotwired/stimulus", "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js")
@@ -13,8 +14,12 @@ FRONT_LOADER = AssetPipeline::FrontLoader.new(js_source_path: Path["src/javascri
   # Default login controller for login form from `GET /login`
   import_map.add_import("login_controller", "src/javascript/login_controller.js")
 
-  # # Add new controllers below here
+  # --- Add new controllers below here ---
 
+
+
+  # --- End of new controllers ---
+  # Add the new import map into the list of import maps for front loader.
   import_maps << import_map
 
   # Clear out any existing cached files from the output path

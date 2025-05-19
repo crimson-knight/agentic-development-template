@@ -10,7 +10,7 @@ Amber::Server.configure do
 
     # Add the CurrentUserPipe to handle authentication
   end
-  
+
   pipeline :auth do
     plug CurrentUserPipe.new
     plug AuthenticateUser.new
@@ -33,7 +33,7 @@ Amber::Server.configure do
     get "/login", Public::SessionController, :new
     post "/login", Public::SessionController, :create
   end
-  
+
   routes :auth do
     # Routes only available to authenticated users
     get "/dashboard", Authenticated::DashboardController, :index
