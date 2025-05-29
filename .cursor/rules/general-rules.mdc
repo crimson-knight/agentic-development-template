@@ -1,0 +1,17 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+--- Tech Stack ---
+Language: Crystal (http://crystal-lang.org)
+Web Framework: Amber (http://amberframework.org)
+Frontend: Views are rendered with .ecr templates, similar to .erb in Ruby.
+ORM: Jennifer (https://github.com/imdrasil/jennifer.cr)
+Tasks: `Sam` is the name of the rake-like utility tool for running tasks related to the code base.
+
+--- CLI Helper ---
+When creating migrations, use this CLI command template `./sam generate:migration <underscored_migration_name_here>`
+You can read about migrations and the correct methods/syntax for using this tool in the `help/jennifer_reference_docs` folder
+
+The `amber` cli is available to you for creating scaffolding and shortcuts for other file types. This includes a generator for models, however these models are for the wrong ORM and will be invalid. If you create a scaffold or use a generator that creates a model file, you'll need to correct it using the instructions for a Jennifer model.
