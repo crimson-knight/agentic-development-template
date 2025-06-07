@@ -40,7 +40,8 @@ Amber::Server.configure do |settings|
   # deploying Amber to a PAAS and likely the assigned server IP is either
   # known or unknown. Defaults to an environment variable HOST
   #
-  # settings.host = ENV["HOST"] if ENV["HOST"]?
+  # Bind to 0.0.0.0 for Docker/container deployments
+  settings.host = ENV["HOST"]? || "0.0.0.0"
   #
   #
   # Port Reuse: Amber supports clustering mode which allows to spin

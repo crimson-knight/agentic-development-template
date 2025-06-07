@@ -24,9 +24,7 @@ dependencies:
     github: crimson-knight/i18n.cr
     version: ~> 0.4.1
 
-  granite:
-    github: amberframework/granite
-    branch: master
+
 
   quartz_mailer:
     github: amberframework/quartz-mailer
