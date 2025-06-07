@@ -24,8 +24,6 @@ dependencies:
     github: crimson-knight/i18n.cr
     version: ~> 0.4.1
 
-
-
   quartz_mailer:
     github: amberframework/quartz-mailer
     version: ~> 0.8.0
