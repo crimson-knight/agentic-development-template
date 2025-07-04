@@ -9,9 +9,21 @@ Web Framework: Amber (http://amberframework.org)
 Frontend: Views are rendered with .ecr templates, similar to .erb in Ruby.
 ORM: Jennifer (https://github.com/imdrasil/jennifer.cr)
 Tasks: `Sam` is the name of the rake-like utility tool for running tasks related to the code base.
+Calls/Texts: Twilio
+AI Voice Agent: Eleven Labs
 
 --- CLI Helper ---
 When creating migrations, use this CLI command template `./sam generate:migration <underscored_migration_name_here>`
 You can read about migrations and the correct methods/syntax for using this tool in the `help/jennifer_reference_docs` folder
 
 The `amber` cli is available to you for creating scaffolding and shortcuts for other file types. This includes a generator for models, however these models are for the wrong ORM and will be invalid. If you create a scaffold or use a generator that creates a model file, you'll need to correct it using the instructions for a Jennifer model.
+
+## Patterns & Conventions
+
+- Database models follow the active record design pattern
+- MVC - following the same conventions as Rails conventions for the view-controller naming. Model naming is also the same as in Rails, but not tightly coupled.
+
+- REST based routing, like in Rails, but can be customized.
+1. `public` - this is for any controller that doesn't require authentication for a persona
+2. `authenicated` - this for any controller that handles an authentication restricted resource and which renders a view back to the requester
+3. `api` - this is for requests being processed that will not have a standard view rendered back for them. This may or may not have 

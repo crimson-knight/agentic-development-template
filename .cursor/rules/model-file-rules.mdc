@@ -1,0 +1,513 @@
+# Jennifer ORM Quick Guide
+---
+globs: src/models/**
+alwaysApply: false
+---
+
+# Jennifer ORM Guide
+
+## Overview
+
+Jennifer is an ORM (Object-Relational Mapping) library for Crystal that provides a clean way to map database tables to Crystal classes and define relationships between them.
+
+## Basic Model Examples
+
+```crystal
+# Simple model with relationships and validations
+class Contact < Jennifer::Model::Base
+  with_timestamps
+  mapping(
+    id: Primary64,              # Int64 primary key
+    name: String,
+    gender: {type: String?, default: "male"},
+    age: {type: Int32, default: 10},
+    description: String?,
+    created_at: Time?,
+    updated_at: Time | Nil
+  )
+
+  has_many :addresses, Address
+  has_many :facebook_profiles, FacebookProfile
+  has_and_belongs_to_many :countries, Country
+  has_one :main_address, Address, {where { _main }}
+  has_one :passport, Passport
+
+  validates_inclusion :age, 13..75
+  validates_length :name, minimum: 1, maximum: 15
+  validates_with_method :name_check
+
+  scope :adult { where { _age > 18 } }
+  scope :older { |age| where { _age >= age } }
+  scope :ordered { order(name: :asc) }
+
+  def name_check
+    if @description && @description.not_nil!.size > 10
+      errors.add(:description, "Too large description")
+    end
+  end
+end
+
+# Related models
+class Address < Jennifer::Model::Base
+  mapping(
+    id: {type: Int64, primary: true},
+    main: Bool,
+    street: String,
+    contact_id: Int64?,
+    details: JSON::Any?
+  )
+  
+  validates_format :street, /st\.|street/
+  belongs_to :contact, Contact
+  
+  scope :main { where { _main } }
+end
+
+# Model with string primary key
+class Passport < Jennifer::Model::Base
+  mapping(
+    enn: {type: String, primary: true},
+    contact_id: {type: Int64, null: true}
+  )
+
+  validates_with EnnValidator
+  belongs_to :contact, Contact
+end
+
+# Single Table Inheritance (STI) example
+class Profile < Jennifer::Model::Base
+  mapping(
+    id: Primary64,
+    login: String,
+    contact_id: Int64?,
+    type: String
+  )
+
+  belongs_to :contact, Contact
+end
+
+class FacebookProfile < Profile
+  mapping(uid: String)
+  has_and_belongs_to_many :facebook_contacts, Contact, foreign: :profile_id
+end
+
+class TwitterProfile < Profile
+  mapping(email: String)
+end
+```
+
+## Mapping Definition
+
+The `.mapping` macro defines model attributes and their database mappings. Use it in two ways:
+
+### Simple syntax
+```crystal
+field_name: :Type
+```
+
+### Named tuple syntax with options
+```crystal
+field_name: {type: Type, option: value}
+```
+
+### Supported Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `:type` | Crystal data type | Required |
+| `:primary` | Mark as primary key | `false` |
+| `:null` | Allow nil values | `false` (except primary keys) |
+| `:default` | Default value for new objects | None |
+| `:column` | Database column name | Field name |
+| `:getter` | Generate getter method | `true` |
+| `:setter` | Generate setter method | `true` |
+| `:virtual` | Virtual field (not persisted) | `false` |
+| `:generated` | Database-generated column | `false` |
+| `:converter` | Custom serializer/deserializer | None |
+| `:auto` | Auto-increment primary key | `true` for Int32/Int64 |
+
+### Making Fields Nullable
+
+Three ways to allow nil values:
+
+```crystal
+# Option 1: null parameter
+field: {type: String, null: true}
+
+# Option 2: ? syntax
+field: String?
+
+# Option 3: Union type
+field: String | Nil
+```
+
+### Strict Mode
+
+By default, you must define all table fields. To disable this requirement:
+
+```crystal
+mapping({
+  id: Primary64,
+  name: String
+}, strict: false)
+```
+
+### Generated Methods
+
+The `.mapping` macro automatically generates:
+
+**Class Methods:**
+- `.new` - Constructors
+- `.field_count` - Number of fields
+- `.field_names` - All field names
+- `._{{field_name}}` - Query builder helpers
+- `.primary` - Primary key criterion
+- `.create` / `.create!` - Create and persist objects
+- `.build` - Build without saving
+
+**Instance Methods:**
+- `#{{field_name}}` - Getter
+- `#{{field_name}}=` - Setter
+- `#{{field_name}}_changed?` - Track changes
+- `#{{field_name}}!` - Non-nil getter (for nullable fields)
+- `#{{field_name}}?` - Predicate (for boolean fields)
+- `#save` / `#save!` - Persist to database
+- `#to_h` / `#to_str_h` - Convert to hash
+- `#attribute` / `#set_attribute` - Dynamic access
+
+## Important Notes
+
+⚠️ **Requirements:**
+- Every model must have a primary field
+- If using multiple mapping macros, Jennifer's mapping must come last
+
+## Relationships
+
+Relationships connect models and simplify database operations. Without relationships, you'd write verbose code:
+
+```crystal
+# Without relationships
+author = Author.first!
+book = Book.create({author_id: author.id, title: "Kobzar"})
+
+# Delete author and books
+books = Book.where(author_id: author.id)
+books.each(&.destroy)
+author.destroy
+```
+
+With relationships, operations become simpler:
+
+```crystal
+# With relationships
+book = author.add_book({title: "Kobzar"})
+author.destroy  # Books are destroyed automatically
+```
+
+### Relationship Types
+
+Jennifer supports four relationship types:
+
+#### `belongs_to`
+
+Indicates this model's table contains a foreign key reference to another table. Used for one-to-one or one-to-many relationships.
+
+```crystal
+class Book < Jennifer::Model::Base
+  mapping(
+    id: Primary64,
+    author_id: Int64?,
+    title: String
+  )
+
+  belongs_to :author, Author
+end
+```
+
+**Generated methods:**
+- `#author` - Returns cached author
+- `#author_reload` - Reloads and returns author
+- `#author_query` - Returns query for author
+- `#remove_author` - Removes author
+- `#add_author` - Adds author (accepts object or hash)
+- `#author!` - Non-nil assertion
+
+**Options:**
+- `dependent` - Cleanup strategy (`:none`, `:delete`, `:destroy`, `:restrict_with_exception`)
+- `polymorphic` - Enable polymorphic association
+- `foreign_type` - Column for polymorphic type
+- `required` - Validate presence (boolean or custom message)
+
+```crystal
+class Post < Jennifer::Model::Base
+  mapping(
+    id: Primary64,
+    title: String?,
+    user_id: Int64?
+  )
+
+  belongs_to :user, User, required: ->(object, _field) do
+    "Post #{object.as(Post).title} isn't attached to any user"
+  end
+end
+```
+
+#### `has_one`
+
+Creates a one-to-one relationship where the other model contains the foreign key.
+
+```crystal
+class Author < Jennifer::Model::Base
+  mapping(id: Primary64)
+  
+  has_one :biography, Biography, dependent: :destroy
+end
+```
+
+**Generated methods:** Same as `belongs_to`
+
+**Options:**
+- `dependent` - Cleanup strategy (`:nullify`, `:none`, `:delete`, `:destroy`, `:restrict_with_exception`)
+- `polymorphic` - Enable polymorphic association
+- `foreign_type` - Column for polymorphic type
+- `inverse_of` - Specify inverse relationship name
+
+#### `has_many`
+
+Creates a one-to-many relationship.
+
+```crystal
+class Author < Jennifer::Model::Base
+  mapping(id: Primary64)
+  
+  has_many :books, Book, dependent: :destroy
+end
+```
+
+**Generated methods:**
+- `#books` - Returns cached collection
+- `#books_reload` - Reloads collection
+- `#books_query` - Returns query
+- `#remove_books` - Removes from collection
+- `#add_books` - Adds to collection
+
+**Options:** Same as `has_one`
+
+#### `has_and_belongs_to_many`
+
+Creates a many-to-many relationship through a join table.
+
+```crystal
+class Author < Jennifer::Model::Base
+  mapping(id: Primary64)
+  
+  has_and_belongs_to_many :genres, Genre
+end
+
+class Genre < Jennifer::Model::Base
+  mapping(id: Primary64, name: String)
+  
+  has_and_belongs_to_many :authors, Author
+end
+```
+
+**Generated methods:** Same as `has_many`
+
+**Options:**
+- `join_table` - Custom join table name
+- `association_foreign` - Foreign key on join table
+
+### Bi-directional Associations
+
+Use `inverse_of` to optimize bi-directional relationships:
+
+```crystal
+class Author < Jennifer::Model::Base
+  mapping(id: Primary64)
+  has_many :books, Book, inverse_of: :writer
+end
+
+class Book < Jennifer::Model::Base
+  mapping(id: Primary64, author_id: Int64?)
+  belongs_to :writer, Author, foreign: :author_id
+end
+
+# Now objects are properly linked
+author = Author.first!
+book = author.books.first!
+author.object_id == book.writer.object_id # => true
+```
+
+### Polymorphic Relationships
+
+Allow a model to belong to multiple other models through a single association:
+
+```crystal
+class Picture < Jennifer::Model::Base
+  mapping(
+    id: Primary64,
+    imageable_type: String?,
+    imageable_id: Int64?
+  )
+
+  belongs_to :imageable, Union(Employee | Product), polymorphic: true
+end
+
+class Employee < Jennifer::Model::Base
+  mapping(id: Primary64)
+  has_many :pictures, Picture, polymorphic: true, inverse_of: :imageable
+end
+
+class Product < Jennifer::Model::Base
+  mapping(id: Primary64)
+  has_many :pictures, Picture, polymorphic: true, inverse_of: :imageable
+end
+```
+
+⚠️ **Limitation:** Polymorphic `belongs_to` relations cannot be eagerly loaded:
+```crystal
+Picture.includes(:imageable) # This will raise an error
+```
+
+## Converters
+
+Converters handle custom field serialization. Required methods:
+
+```crystal
+module MyConverter
+  def self.from_db(rs : DB::ResultSet, options : NamedTuple)
+    # Convert from database
+  end
+  
+  def self.to_db(value : T, options : NamedTuple)
+    # Convert to database format
+  end
+  
+  def self.from_hash(hash : Hash(String, Jennifer::DBAny | T), 
+                     field : String, options : NamedTuple)
+    # Convert from hash
+  end
+end
+```
+
+### Built-in Converters
+
+#### TimeZoneConverter
+Automatically converts UTC times to application timezone.
+
+Options:
+- `time_zone_aware: Bool` - Disable timezone conversion
+- `time_format: String` - Parse time strings (default: `%H:%M`)
+- `date_format: String` - Parse date strings (default: `%F`)
+- `date_time_format: String` - Parse datetime strings (default: `%F %T`)
+
+#### JSONConverter
+Handles `JSON::Any` fields automatically.
+
+#### EnumConverter
+Maps enums to strings:
+
+```crystal
+enum Category
+  GOOD
+  BAD
+end
+
+class Note < Jennifer::Model::Base
+  mapping(
+    category: {type: Category?, converter: Jennifer::Model::EnumConverter(Category)}
+  )
+end
+```
+
+#### BigDecimalConverter
+For precise decimal operations:
+
+```crystal
+class Order < Jennifer::Model::Base
+  mapping(
+    total: {
+      type: BigDecimal?, 
+      converter: Jennifer::Model::BigDecimalConverter(PG::Numeric), 
+      scale: 2
+    }
+  )
+end
+```
+
+#### JSONSerializableConverter
+Maps JSON to Crystal classes:
+
+```crystal
+class Location
+  include JSON::Serializable
+  property latitude : Float64
+  property longitude : Float64
+end
+
+class User < Jennifer::Model::Base
+  mapping(
+    location: {
+      type: Location, 
+      converter: Jennifer::Model::JSONSerializableConverter(Location)
+    }
+  )
+end
+```
+
+## Predefined Mapping Types
+
+Jennifer includes shortcuts for common patterns:
+
+- `Primary32` - Int32 primary key
+- `Primary64` - Int64 primary key  
+- `Password` - Virtual string field without setter
+
+### Custom Types
+
+Create your own mapping types:
+
+```crystal
+class ApplicationRecord < Jennifer::Model::Base
+  EmptyString = {type: String, default: ""}
+  {% TYPES << "EmptyString" %}
+end
+```
+
+## Virtual vs Generated Attributes
+
+### Virtual Attributes
+Not persisted to database, useful for form fields:
+
+```crystal
+class User < Jennifer::Model::Base
+  mapping(
+    id: Primary64,
+    password_hash: String,
+    password: {type: String?, virtual: true},
+    password_confirmation: {type: String?, virtual: true}
+  )
+
+  validate_confirmation :password
+  
+  before_create :crypt_password
+  
+  def crypt_password
+    self.password_hash = encrypt(self.password)
+  end
+end
+```
+
+### Generated Attributes
+Database-calculated columns (read-only):
+
+```crystal
+class User < Jennifer::Model::Base
+  mapping(
+    id: Primary64,
+    first_name: String,
+    last_name: String,
+    full_name: {type: String?, generated: true}
+  )
+end
+```

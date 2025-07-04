@@ -1,0 +1,36 @@
+---
+globs: src/views/**
+alwaysApply: false
+---
+
+The styling framework used is Tailwind 4, from the public CDN.
+
+This project uses ECR templates for the views.
+
+# About ECR
+
+Embedded Crystal (ECR) is a template language for embedding Crystal code into other text, that includes but is not limited to HTML. The template is read and transformed at compile time and then embedded into the binary.
+
+There are <%= %> and <% %> syntax. The former will render returned values. The latter will not, but instead serve to control the structure as we do in Crystal.
+
+Using a dash inside <...> either eliminates previous indentation or removes the next newline:
+
+<%- ... %>: removes previous indentation
+<% ... -%>: removes next newline
+<%-= ... %>: removes previous indentation
+<%= ... -%>: removes next newline
+
+A comment can be created the same as normal code: <% # hello %> or by the special tag: <%# hello %>. An ECR tag can be inserted directly (i.e. the tag itself may be escaped) by using a second % like so: <%% a = b %> or <%%= foo %>. Dashes may also be present in those escaped tags and have no effect on the surrounding text.
+
+1. View names follow Rails conventions to match up to the controller and action that they are called from.
+  1a. **Important** a major difference between ecr templates and erb templates is that you _do not_ need to use instance variables. All variables that are defined in the controller's action that call the ECR template are usable within the ECR template view.
+
+# Javascript
+
+1. Javascript is all done with StimulusJS and vanilla Javascript ES modules.
+  1a. Javascript files are all under `src/javascript/`
+  1b. All javascript files are included by using an import map feature. The files that will be compiled into the app should be found in `src/config/initializers/asset_pipeline.cr` and then the final additions should be made in `src/views/layouts/application.cr`. You'll easily be able to identify the syntax for the ES module imports and then if there is any setup scripts that need to take place, they can easily be added there.---
+description:
+globs:
+alwaysApply: false
+---

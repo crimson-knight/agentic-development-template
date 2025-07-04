@@ -1,0 +1,26 @@
+---
+description: 
+globs: src/controllers/**
+alwaysApply: false
+---
+
+# Overview
+
+Controllers in Amber are similar to Rails but have some key differences.
+
+One of these differences is the organization into folders.
+
+the `src/controllers/` folder is the main starting point. There are 3 main folders that controllers get grouped into:
+
+1. `public` - this is for any controller that doesn't require authentication for a persona
+2. `authenicated` - this for any controller that handles an authentication restricted resource and which renders a view back to the requester
+3. `api` - this is for requests being processed that will not have a standard view rendered back for them. This may or may not have authenticated controllers, in most cases these controllers will have routes/actions that are protected by authentication.
+4. Each of these folders has it's own "base" controller that sets the default before/after calls and helper methods that will get used throughout it's child controllers.
+
+# Naming Conventions
+
+Each controller in the folder is namespaced to reflect that folder, with the controller name being the last part.
+
+For example:
+
+An API controller about a resource named "Address" would be: `Api::AddressController < Api::BaseApiController`

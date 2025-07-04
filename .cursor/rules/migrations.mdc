@@ -7,9 +7,23 @@ All migration files are written using `Jennifer::Migration::Base`.
 
 You will create the migration name using the Sam CLI tool, the command is: `./sam g migration <underscored_migration_name_here>`
 
+Sam will provide help documentation if you run `./sam help`
+
 This will output the name of the file that was created. 
 Open that file to then create the migration you need.
 
 Refer to the documentation for what is usable within the migration.
 
 Validate that the migration is going to compile by running `crystal build sam.cr`
+
+```crystal
+change_table(:contacts) do |t|
+  t.rename_table :users
+  t.add_column :name, :string, {:size => 30}
+  t.drop_column :age
+end
+```
+
+Documentation for the available methods and their signatures can be found in `help/jennifer_reference_docs/migration_change_table_overview.md`
+
+Documentation for creating a table can be found in `help/jennifer_reference_docs/migration_create_table.md`

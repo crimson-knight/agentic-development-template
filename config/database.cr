@@ -13,7 +13,7 @@ Jennifer::Config.configure do |conf|
   database_url = ENV["DATABASE_URL"]? || ENV["DATABASE_URI"]?
 
   # Jennifer only supports `postgres://` not `postgresql://`
-  if database_url.starts_with?("postgresql://")
+  if database_url && database_url.starts_with?("postgresql://")
     database_url = database_url.gsub("postgresql://", "postgres://")
   end
 
