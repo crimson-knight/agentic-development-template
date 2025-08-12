@@ -17,8 +17,8 @@ targets:
 
 dependencies:
   amber:
-    github: amberframework/amber
-    version: 1.4.1
+    github: crimson-knight/amber
+    branch: master
 
   i18n:
     github: crimson-knight/i18n.cr
