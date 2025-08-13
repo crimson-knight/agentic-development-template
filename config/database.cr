@@ -17,10 +17,11 @@ else
     YAML.parse(file)[APP_ENV]
   end
   
-  database_name = db_config["database"].as_s
+  # Support both 'database' and 'db' keys for compatibility
+  database_name = db_config["database"]? ? db_config["database"].as_s : db_config["db"].as_s
   host = db_config["host"]? ? db_config["host"].as_s : "localhost"
   port = db_config["port"]? ? db_config["port"].as_i : 5432
-  username = db_config["username"]? ? db_config["username"].as_s : "postgres"
+  username = db_config["user"]? ? db_config["user"].as_s : "postgres"
   password = db_config["password"]? ? db_config["password"].as_s : ""
   
   Granite::Connections << Granite::Adapter::Pg.new(
