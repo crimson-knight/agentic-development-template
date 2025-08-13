@@ -1,5 +1,5 @@
 class Public::SessionController < ApplicationController
-  getter user = User.new
+  getter user : Persona = User.new
   property valid_email : String = ""
   property valid_password : String = ""
 
@@ -16,7 +16,7 @@ class Public::SessionController < ApplicationController
     raise "Email param is required" if @valid_email.nil?
     raise "Password param is required" if @valid_password.nil?
 
-    user_authed_successfully = User.find_by!({:email => @valid_email}).try(&.authenticate(@valid_password))
+    user_authed_successfully = User.find_by({:email => @valid_email}).try(&.authenticate(@valid_password))
 
     if user_authed_successfully
       session[:user_id] = user_authed_successfully.id

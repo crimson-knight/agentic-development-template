@@ -1,0 +1,2 @@
+database_url: postgres://postgres:@localhost:5432/agentc_app_template_oss_development
+migration_dir: db/migrate

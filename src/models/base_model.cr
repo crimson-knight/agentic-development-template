@@ -1,4 +1,4 @@
-require "jennifer/model/base"
+require "granite/adapter/pg"
 
-abstract class BaseModel < Jennifer::Model::Base
-end
+# This file is now empty as Granite models should inherit directly from Granite::Base
+# Left for compatibility
