@@ -1,13 +1,13 @@
 # This adds the `current_user` property to the HTTP::Server::Context from the Crystal standard library
 class HTTP::Server::Context
-  property current_user : User?
+  property current_user : Persona?
 end
 
 # This pipe sets the `current_user` property on the HTTP::Server::Context
 class CurrentUserPipe < Amber::Pipe::Base
   def call(context)
     user_id = context.session["user_id"]?
-    if user = User.find user_id
+    if user = Persona.find user_id
       context.current_user = user
     end
     call_next(context)
