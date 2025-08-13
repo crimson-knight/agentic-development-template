@@ -60,6 +60,10 @@ shards:
     git: https://github.com/icyleaf/markd.git
     version: 0.4.2
 
+  mcprotocol:
+    git: https://github.com/crimson-knight/mcprotocol.git
+    version: 1.0.0+git.commit.a199d0494b3a7f2046676d650e67db2e6e22f66c
+
   pg:
     git: https://github.com/will/crystal-pg.git
     version: 0.26.0

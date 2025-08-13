@@ -38,9 +38,17 @@ Amber::Server.configure do
     # Routes only available to authenticated users
     get "/dashboard", Authenticated::DashboardController, :index
     get "/logout", Authenticated::SessionController, :destroy
+    
+    # Authenticated MCP endpoints
+    get "/mcp/tools", Authenticated::McpToolsController, :list
+    post "/mcp/tools/:name/execute", Authenticated::McpToolsController, :execute
+    get "/mcp/tools/history", Authenticated::McpToolsController, :history
+    get "/mcp/tools/configurations", Authenticated::McpToolsController, :configurations
   end
 
   routes :api do
+    # MCP endpoints
+    get "/mcp/handshake", ApiControllers::McpController, :handshake
   end
 
   routes :static do

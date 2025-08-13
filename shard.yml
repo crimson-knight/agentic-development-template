@@ -45,6 +45,10 @@ dependencies:
     # version: ~> 0.34.0
     branch: main
 
+  mcprotocol:
+    github: crimson-knight/mcprotocol
+    branch: main
+
 development_dependencies:
   ameba:
     github: crystal-ameba/ameba
