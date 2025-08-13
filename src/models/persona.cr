@@ -6,8 +6,8 @@ class Persona < Granite::Base
   table personas
   
   column id : Int64, primary: true
-  column email : String
-  column password_digest : String
+  column email : String = ""
+  column password_digest : String = ""
   column type : String = "User"
   column api_key : String?
   column api_secret : String?
@@ -30,9 +30,9 @@ class Persona < Granite::Base
   
   # Authentication methods
   def authenticate(password : String) : Persona?
-    return nil if password_digest.nil?
+    return nil if password_digest.empty?
     
-    if Crypto::Bcrypt::Password.new(password_digest.not_nil!) == password
+    if Crypto::Bcrypt::Password.new(password_digest).verify(password)
       self
     else
       nil
