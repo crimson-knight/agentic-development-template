@@ -60,21 +60,9 @@ shards:
     git: https://github.com/luckyframework/habitat.git
     version: 0.4.9
 
-  i18n:
-    git: https://github.com/crimson-knight/i18n.cr.git
-    version: 0.4.1
-
-  jasper_helpers:
-    git: https://github.com/amberframework/jasper-helpers.git
-    version: 1.2.2
-
   kilt:
     git: https://github.com/jeromegn/kilt.git
     version: 0.6.1
-
-  markd:
-    git: https://github.com/icyleaf/markd.git
-    version: 0.4.2
 
   mcprotocol:
     git: https://github.com/crimson-knight/mcprotocol.git

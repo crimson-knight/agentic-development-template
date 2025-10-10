@@ -20,17 +20,9 @@ dependencies:
     github: crimson-knight/amber
     branch: master
 
-  i18n:
-    github: crimson-knight/i18n.cr
-    version: ~> 0.4.1
-
   quartz_mailer:
     github: amberframework/quartz-mailer
     version: ~> 0.8.0
-
-  jasper_helpers:
-    github: amberframework/jasper-helpers
-    version: ~> 1.2.2 
 
   pg:
     github: will/crystal-pg
