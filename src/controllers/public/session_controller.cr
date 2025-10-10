@@ -1,3 +1,6 @@
+require "../../components/forms/login_form_component"
+require "../../components/layouts/application_layout"
+
 class Public::SessionController < ApplicationController
   property valid_email : String = ""
   property valid_password : String = ""
@@ -7,7 +10,26 @@ class Public::SessionController < ApplicationController
   end
 
   def new
-    render("new.ecr")
+    # Build login form component
+    form = Components::Forms::LoginFormComponent.new(
+      csrf_token: csrf_token,
+      email_value: params["email"]?,
+      error_message: flash[:danger]?
+    )
+
+    # Wrap in layout
+    layout = Components::Layouts::ApplicationLayout.new(
+      title: "Sign In - AgentC",
+      content: form.render,
+      current_path: request.path,
+      logged_in: "false",
+      flash_success: flash[:success]?,
+      flash_error: flash[:danger]?,
+      flash_info: flash[:info]?
+    )
+
+    context.response.content_type = "text/html"
+    context.response.print layout.render
   end
 
   def create
