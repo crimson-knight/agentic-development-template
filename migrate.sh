@@ -5,7 +5,7 @@ set -e
 
 echo "Running database migrations..."
 
-# Set the environment for Jennifer and Sam
+# Set the environment for the application
 export AMBER_ENV=production
 export APP_ENV=production
 
@@ -19,15 +19,18 @@ echo "DATABASE_URL: ${DATABASE_URL:0:20}..." # Only show first 20 chars for secu
 echo "Waiting for database to be ready..."
 sleep 10
 
-# Run database migrations with explicit environment
+# Build micrate if it doesn't exist
+if [ ! -f "./bin/micrate" ]; then
+    echo "Building micrate..."
+    crystal build db/micrate.cr -o bin/micrate
+fi
+
+# Run database migrations with micrate
 echo "Running database migrations..."
-if AMBER_ENV=production APP_ENV=production ./sam db:migrate; then
+if AMBER_ENV=production APP_ENV=production ./bin/micrate up; then
     echo "Database migrations completed successfully!"
     exit 0
 else
-    echo "Database migrations encountered some issues..."
-    echo "This might be due to pg_dump version mismatch, which is non-critical"
-    echo "Checking if migrations actually succeeded..."
-    # Exit with success if this is just a pg_dump issue
-    exit 0
+    echo "Database migrations failed!"
+    exit 1
 fi 

@@ -3,16 +3,19 @@ require "mcprotocol"
 class Authenticated::McpToolsController < Authenticated::BaseAuthenticatedController
   # List available tools for the authenticated user
   def list
+    # current_user is guaranteed to be set by BaseAuthenticatedController
+    user = current_user.not_nil!
+
     # Filter tools based on user permissions
     all_tools = McpTools::Registry.list_tools
-    
+
     # You can filter tools based on user role/permissions
     user_tools = filter_tools_for_user(all_tools)
-    
+
     respond_with do
       json({
-        user_id: current_user.id,
-        username: current_user.email,
+        user_id: user.id,
+        username: user.email,
         tools: user_tools
       }.to_json)
     end
@@ -53,11 +56,12 @@ class Authenticated::McpToolsController < Authenticated::BaseAuthenticatedContro
 
   # Get user-specific tool history
   def history
+    user = current_user.not_nil!
     # This would typically query a database table that tracks tool executions
     # For now, return a placeholder response
     respond_with do
       json({
-        user_id: current_user.id,
+        user_id: user.id,
         executions: [] of String,
         message: "Tool history tracking not yet implemented"
       }.to_json)
@@ -66,11 +70,12 @@ class Authenticated::McpToolsController < Authenticated::BaseAuthenticatedContro
 
   # Get user's custom tool configurations
   def configurations
+    user = current_user.not_nil!
     # Users can have custom configurations for tools
     # This would typically be stored in a user_tool_configs table
     respond_with do
       json({
-        user_id: current_user.id,
+        user_id: user.id,
         configurations: {} of String => String,
         message: "User tool configurations not yet implemented"
       }.to_json)
@@ -82,7 +87,7 @@ class Authenticated::McpToolsController < Authenticated::BaseAuthenticatedContro
     # For now, return all tools for authenticated users
     # You could check user.role or user.permissions here
     
-    if current_user.is_a?(Admin)
+    if current_user.is_a?(Users::Admin)
       # Admins see all tools
       tools
     else
@@ -97,9 +102,9 @@ class Authenticated::McpToolsController < Authenticated::BaseAuthenticatedContro
   private def user_can_execute_tool?(tool_name : String) : Bool
     # Check if user has permission to execute this specific tool
     # This could check against a permissions table or user role
-    
+
     # For demonstration, block admin tools for non-admin users
-    if tool_name.includes?("admin") && !current_user.is_a?(Admin)
+    if tool_name.includes?("admin") && !current_user.is_a?(Users::Admin)
       return false
     end
     
@@ -107,31 +112,33 @@ class Authenticated::McpToolsController < Authenticated::BaseAuthenticatedContro
   end
 
   private def add_user_context(params : JSON::Any) : JSON::Any
+    user = current_user.not_nil!
     # Add user context to the tool parameters
     # This ensures tools always know which user is executing them
-    
+
     user_context = {} of String => JSON::Any
-    user_context["user_id"] = JSON::Any.new(current_user.id.not_nil!)
-    user_context["user_email"] = JSON::Any.new(current_user.email)
-    user_context["user_type"] = JSON::Any.new(current_user.class.name)
+    user_context["user_id"] = JSON::Any.new(user.id.not_nil!)
+    user_context["user_email"] = JSON::Any.new(user.email)
+    user_context["user_type"] = JSON::Any.new(user.class.name)
     user_context["execution_time"] = JSON::Any.new(Time.utc.to_s)
-    
+
     # Merge user context with original params
     original = params.as_h? || {} of String => JSON::Any
     enriched = original.merge({"_context" => JSON::Any.new(user_context)})
-    
+
     JSON::Any.new(enriched)
   end
 
   private def log_tool_execution(tool_name : String, params : JSON::Any, result : JSON::Any)
+    user = current_user.not_nil!
     # Log tool execution for audit purposes
-    Log.info { "User #{current_user.id} executed tool '#{tool_name}'" }
+    Log.info { "User #{user.id} executed tool '#{tool_name}'" }
     Log.debug { "Parameters: #{params.to_json}" }
     Log.debug { "Result: #{result.to_json}" }
-    
+
     # In production, you might want to save this to a database table:
     # ToolExecution.create(
-    #   user_id: current_user.id,
+    #   user_id: user.id,
     #   tool_name: tool_name,
     #   parameters: params.to_json,
     #   result: result.to_json,

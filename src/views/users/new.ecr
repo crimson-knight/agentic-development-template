@@ -1,0 +1,63 @@
+<div class="container">
+  <h1>Create New User</h1>
+
+  <% if flash["error"]? %>
+    <div class="alert alert-error">
+      <%= flash["error"] %>
+    </div>
+  <% end %>
+
+  <form action="/users" method="post" enctype="multipart/form-data" data-controller="user-form">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" value="<%= user.email %>" required>
+    </div>
+
+    <div class="form-group">
+      <label for="first_name">First Name</label>
+      <input type="text" id="first_name" name="first_name" value="<%= user.first_name %>" required>
+    </div>
+
+    <div class="form-group">
+      <label for="last_name">Last Name</label>
+      <input type="text" id="last_name" name="last_name" value="<%= user.last_name %>" required>
+    </div>
+
+    <div class="form-group">
+      <label for="bio">Bio</label>
+      <textarea id="bio" name="bio" rows="4"><%= user.bio %></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="avatar">Avatar Image</label>
+      <input
+        type="file"
+        id="avatar"
+        name="avatar"
+        accept="image/jpeg,image/png,image/webp"
+        data-user-form-target="avatarInput"
+        data-action="change->user-form#previewAvatar">
+      <small>Max 5MB. Accepted formats: JPEG, PNG, WebP</small>
+      <div id="avatar-preview" data-user-form-target="avatarPreview"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="resume">Resume (PDF)</label>
+      <input
+        type="file"
+        id="resume"
+        name="resume"
+        accept="application/pdf"
+        data-user-form-target="resumeInput">
+      <small>Max 10MB. PDF only</small>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Create User</button>
+      <a href="/users" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<!-- Include import map for JavaScript -->
+<%= AssetConfig.import_map_html %>

@@ -1,5 +1,11 @@
-require "jennifer"
-require "jennifer/adapter/postgres"
+require "pg"
+require "grant"
+require "grant/adapter/pg"
+# Grant's locking module references all adapters, so we need to require them
+# even if we're only using PostgreSQL
+require "grant/adapter/mysql"
+require "grant/adapter/sqlite"
+require "yaml"
 
 {% if @top_level.has_constant? "Spec" %}
   APP_ENV = "test"
@@ -7,17 +13,25 @@ require "jennifer/adapter/postgres"
   APP_ENV = ENV["APP_ENV"]? || "development"
 {% end %}
 
-Jennifer::Config.configure do |conf|
-  conf.read("config/database.yml", APP_ENV)
-  # Support both DATABASE_URL (DigitalOcean) and DATABASE_URI
-  database_url = ENV["DATABASE_URL"]? || ENV["DATABASE_URI"]?
+database_url = ENV["DATABASE_URL"]? || ENV["DATABASE_URI"]?
 
-  # Jennifer only supports `postgres://` not `postgresql://`
-  if database_url && database_url.starts_with?("postgresql://")
-    database_url = database_url.gsub("postgresql://", "postgres://")
+if database_url
+  Grant::Connections << Grant::Adapter::Pg.new(name: "pg", url: database_url)
+else
+  # Load from config/database.yml
+  db_config = File.open("config/database.yml") do |file|
+    YAML.parse(file)[APP_ENV]
   end
-
-  conf.from_uri(database_url) if database_url
-  conf.pool_size = (ENV["DB_CONNECTION_POOL"] ||= "5").to_i
-  conf.logger.level = APP_ENV == "development" ? Log::Severity::Debug : Log::Severity::Error
+  
+  # Support both 'database' and 'db' keys for compatibility
+  database_name = db_config["database"]? ? db_config["database"].as_s : db_config["db"].as_s
+  host = db_config["host"]? ? db_config["host"].as_s : "localhost"
+  port = db_config["port"]? ? db_config["port"].as_i : 5432
+  username = db_config["user"]? ? db_config["user"].as_s : "postgres"
+  password = db_config["password"]? ? db_config["password"].as_s : ""
+  
+  Grant::Connections << Grant::Adapter::Pg.new(
+    name: "pg",
+    url: "postgres://#{username}:#{password}@#{host}:#{port}/#{database_name}"
+  )
 end

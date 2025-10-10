@@ -1,5 +1,4 @@
 class Public::SessionController < ApplicationController
-  getter user = User.new
   property valid_email : String = ""
   property valid_password : String = ""
 
@@ -8,7 +7,6 @@ class Public::SessionController < ApplicationController
   end
 
   def new
-    user = User.new
     render("new.ecr")
   end
 
@@ -16,10 +14,19 @@ class Public::SessionController < ApplicationController
     raise "Email param is required" if @valid_email.nil?
     raise "Password param is required" if @valid_password.nil?
 
-    user_authed_successfully = User.find_by!({:email => @valid_email}).try(&.authenticate(@valid_password))
+    # Try to authenticate as regular user first
+    authenticated_user = Users::Regular.authenticate(@valid_email, @valid_password)
+    user_type = "regular"
 
-    if user_authed_successfully
-      session[:user_id] = user_authed_successfully.id
+    # If not found, try admin user
+    if authenticated_user.nil?
+      authenticated_user = Users::Admin.authenticate(@valid_email, @valid_password)
+      user_type = "admin"
+    end
+
+    if authenticated_user
+      session[:user_id] = authenticated_user.id
+      session[:user_type] = user_type
 
       flash[:info] = "Successfully logged in!"
       respond_with do

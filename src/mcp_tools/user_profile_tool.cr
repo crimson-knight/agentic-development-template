@@ -59,9 +59,9 @@ module McpTools
     end
 
     private def get_profile(user_id : Int64)
-      # Fetch user from database
-      user = User.find(user_id)
-      
+      # Try to fetch user from either table
+      user = Users::Regular.find(user_id) || Users::Admin.find(user_id)
+
       return JSON.parse({
         success: false,
         error: "User not found"
@@ -72,6 +72,7 @@ module McpTools
         profile: {
           id: user.id,
           email: user.email,
+          user_type: user.class.name,
           created_at: user.created_at,
           # Add more profile fields as needed
           # display_name: user.display_name,
@@ -87,7 +88,7 @@ module McpTools
         error: "No fields provided for update"
       }.to_json) unless fields
 
-      user = User.find(user_id)
+      user = Users::Regular.find(user_id) || Users::Admin.find(user_id)
       
       return JSON.parse({
         success: false,

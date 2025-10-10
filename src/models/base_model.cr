@@ -1,4 +1,5 @@
-require "jennifer/model/base"
+require "grant"
 
-abstract class BaseModel < Jennifer::Model::Base
+abstract class BaseModel < Grant::Base
+  connection pg
 end

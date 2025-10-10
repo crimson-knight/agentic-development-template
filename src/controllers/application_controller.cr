@@ -4,12 +4,12 @@ class ApplicationController < Amber::Controller::Base
   include JasperHelpers
   LAYOUT = "application.ecr"
 
-  # Scoped down to regular `User`, you must use a conditional assignment to remove the `Nil` from the type union if you need to use the `current_user` in the controller.
-  def get_current_user : User | Nil
+  # Returns the current user (Users::Regular or Users::Admin)
+  def get_current_user : CurrentUser?
     context.current_user
   end
 
   def logged_in?
-    get_current_user.present?
+    !get_current_user.nil?
   end
 end

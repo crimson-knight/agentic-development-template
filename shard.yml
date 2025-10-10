@@ -34,10 +34,14 @@ dependencies:
 
   pg:
     github: will/crystal-pg
-    version: ~> 0.26.0
+    version: ~> 0.28.0
 
-  jennifer:
-    github: imdrasil/jennifer.cr
+  grant:
+    github: crimson-knight/grant
+    branch: main
+
+  gemma:
+    github: crimson-knight/gemma
     branch: master
 
   asset_pipeline:
@@ -45,15 +49,18 @@ dependencies:
     # version: ~> 0.34.0
     branch: main
 
+  # S3 support for Gemma in production (version managed by Gemma)
+  # awscr-s3 is a transitive dependency through Gemma
+
   mcprotocol:
     github: crimson-knight/mcprotocol
     branch: main
+
+  micrate:
+    github: amberframework/micrate
+    branch: master
 
 development_dependencies:
   ameba:
     github: crystal-ameba/ameba
     version: ~> 1.5.0
-
-  sam:
-    github: imdrasil/sam.cr
-    version: ~> 0.5.0

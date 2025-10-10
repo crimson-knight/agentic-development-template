@@ -1,27 +1,46 @@
-# This file is used to configure the asset pipeline for the Amber application.
-# It sets up the import map for Stimulus controllers and other JavaScript assets.
-#
-# Read more about it here: https://amberframework.github.io/asset_pipeline/AssetPipeline/FrontLoader.html
-#
-JS_OUTPUT_PATH = Path["public/javascript"]
+require "asset_pipeline"
 
-FRONT_LOADER = AssetPipeline::FrontLoader.new(js_source_path: Path["src/javascript"], js_output_path: JS_OUTPUT_PATH) do |import_maps|
-  # Create our primary import map for the application.
-  import_map = AssetPipeline::ImportMap.new("application", Path["/javascript"]) # This path must match the js_output_path above, relative to the `/public` directory
+module AssetConfig
+  class_property front_loader : AssetPipeline::FrontLoader?
 
-  import_map.add_import("@hotwired/stimulus", "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js")
+  def self.initialize_assets
+    @@front_loader = AssetPipeline::FrontLoader.new(
+      js_source_path: Path["src/javascript"],
+      js_output_path: Path["public/javascript"],
+      # Enable cache clearing in development, disable in production
+      clear_cache_upon_change: Amber.env.development?
+    ) do |import_maps|
+      # Application JavaScript import map
+      app_map = AssetPipeline::ImportMap.new("application", Path["/javascript"])
 
-  # Default login controller for login form from `GET /login`
-  import_map.add_import("login_controller", "src/javascript/login_controller.js")
+      # Stimulus JS for interactive components
+      app_map.add_import(
+        "@hotwired/stimulus",
+        "https://unpkg.com/@hotwired/stimulus@3.2.2/dist/stimulus.js"
+      )
 
-  # --- Add new controllers below here ---
+      # Turbo for seamless page updates (optional)
+      app_map.add_import(
+        "@hotwired/turbo",
+        "https://unpkg.com/@hotwired/turbo@7.3.0/dist/turbo.es2017-esm.js"
+      )
 
+      # Default login controller
+      app_map.add_import("login_controller", "src/javascript/login_controller.js")
 
+      # --- Add your custom JavaScript modules here ---
+      # Example:
+      # app_map.add_import("my-module", "/javascript/my_module.js")
 
-  # --- End of new controllers ---
-  # Add the new import map into the list of import maps for front loader.
-  import_maps << import_map
+      import_maps << app_map
+    end
+  end
 
-  # Clear out any existing cached files from the output path
-  FileUtils.rm_rf(JS_OUTPUT_PATH)
+  # Get import map HTML for views
+  def self.import_map_html
+    front_loader.try(&.render_import_map_tag) || ""
+  end
 end
+
+# Initialize assets on application startup
+AssetConfig.initialize_assets

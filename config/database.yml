@@ -1,17 +1,29 @@
-default: &default
-  host: localhost
-  user: postgres
-  password: ''
-  adapter: postgres
-
 development:
-  <<: *default
-  db: agentc_app_template_oss_development
+  adapter: postgresql
+  database: <%= ENV["DB_NAME"] || "agentc_app_template_oss_development" %>
+  host: <%= ENV["DB_HOST"] || "localhost" %>
+  port: <%= ENV["DB_PORT"] || 5432 %>
+  user: <%= ENV["DB_USER"] || "postgres" %>
+  password: <%= ENV["DB_PASSWORD"] || "" %>
+  pool_size: 25
+  checkout_timeout: 5.0
+  retry_attempts: 1
+  retry_delay: 1.0
 
 test:
-  <<: *default
-  db: agentc_app_template_oss_test
+  adapter: postgresql
+  database: <%= ENV["DB_NAME"] || "agentc_app_template_oss_test" %>
+  host: <%= ENV["DB_HOST"] || "localhost" %>
+  port: <%= ENV["DB_PORT"] || 5432 %>
+  user: <%= ENV["DB_USER"] || "postgres" %>
+  password: <%= ENV["DB_PASSWORD"] || "" %>
+  pool_size: 25
+  checkout_timeout: 5.0
 
 production:
-  <<: *default
-  db: agentc_app_template_oss_production
+  adapter: postgresql
+  url: <%= ENV["DATABASE_URL"] %>
+  pool_size: 25
+  checkout_timeout: 5.0
+  retry_attempts: 2
+  retry_delay: 1.0

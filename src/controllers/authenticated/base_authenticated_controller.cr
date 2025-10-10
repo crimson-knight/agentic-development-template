@@ -1,5 +1,5 @@
 class Authenticated::BaseAuthenticatedController < ApplicationController
-  property current_user : User = User.new
+  property current_user : CurrentUser?
 
   before_action do
     only [:all] { set_current_user }
