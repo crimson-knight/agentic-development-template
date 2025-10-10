@@ -1,0 +1,123 @@
+require "grant"
+require "gemma/grant"
+
+class ExampleUser < Grant::Base
+  include Gemma::Grant::Attachable
+  include Gemma::Grant::AttachmentValidators
+
+  connection pg
+  table example_users
+
+  # Primary key and basic columns
+  column id : Int64, primary: true
+  column email : String
+  column first_name : String
+  column last_name : String
+  column bio : String?
+  column active : Bool = true
+  column login_count : Int32 = 0
+  column last_login_at : Time?
+
+  # File attachment columns (JSON storage)
+  column avatar_data : JSON::Any?
+  column resume_data : JSON::Any?
+
+  # Security features
+  has_secure_token :auth_token
+  encrypts :ssn
+
+  # Signed IDs for secure URLs
+  include Grant::SignedId
+
+  # Token generation for password resets
+  # include Grant::TokenFor
+  # generates_token_for :password_reset do
+  #   # Use a field that changes when password changes
+  #   updated_at.to_s
+  # end
+  # Note: TokenFor API may differ - check Grant documentation for correct syntax
+
+  # Data normalization
+  normalizes :email, &.downcase.strip
+  normalizes :first_name, &.strip.titleize
+  normalizes :last_name, &.strip.titleize
+
+  # File attachments
+  has_one_attached :avatar
+  has_one_attached :resume
+
+  # Enum attributes
+  enum Role
+    Guest
+    Member
+    Admin
+  end
+  enum_attribute role : Role = :member
+
+  # Validations
+  validates_presence_of :email, :first_name, :last_name
+  validates_uniqueness_of :email
+  validates_email :email
+  validates_length_of :first_name, minimum: 2, maximum: 50
+  validates_length_of :last_name, minimum: 2, maximum: 50
+  validates_length_of :bio, maximum: 500, allow_blank: true
+
+  # File attachment validations
+  validate_file_size_of :avatar, maximum: 5.megabytes
+  validate_content_type_of :avatar, accept: ["image/jpeg", "image/png", "image/webp"]
+  validate_file_size_of :resume, maximum: 10.megabytes
+  validate_content_type_of :resume, accept: ["application/pdf"]
+
+  # Custom validation
+  validate "cannot be admin if inactive" do |user|
+    !(user.admin? && !user.active)
+  end
+
+  # Associations
+  has_many :posts, dependent: :destroy
+  has_many :comments, dependent: :nullify
+  has_one :profile, dependent: :destroy
+
+  # Scopes
+  scope :active, -> { where(active: true) }
+  scope :admins, -> { admin }
+  scope :recent, -> { where.gteq(:created_at, 7.days.ago) }
+  default_scope -> { where(active: true) }
+
+  # Callbacks
+  before_save :update_login_count
+  after_create :send_welcome_email
+  after_commit :notify_admin, on: :create
+
+  # Timestamps
+  timestamps
+
+  # Instance methods
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+
+  def avatar_url(size : String = "original")
+    avatar.url if avatar
+  end
+
+  def can_edit?(resource)
+    admin? || resource.user_id == id
+  end
+
+  private def update_login_count
+    if last_login_at_changed?
+      self.login_count += 1
+    end
+  end
+
+  private def send_welcome_email
+    # Email logic here
+    puts "Sending welcome email to #{email}"
+  end
+
+  private def notify_admin
+    # Admin notification logic
+    puts "Notifying admin of new user: #{email}"
+  end
+end
