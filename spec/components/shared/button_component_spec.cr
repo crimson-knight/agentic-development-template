@@ -1,5 +1,5 @@
 require "../component_spec_helper"
-require "../../../src/components/shared/button_component"
+require "../../../src/views/components/shared/button_component"
 
 describe Components::Shared::ButtonComponent do
   describe "rendering" do

@@ -1,4 +1,4 @@
-require "../../../lib/asset_pipeline/src/components/base/stateless_component"
+require "../../../../lib/asset_pipeline/src/components/base/stateless_component"
 require "./navigation_component"
 require "../shared/flash_message_component"
 

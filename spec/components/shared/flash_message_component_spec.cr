@@ -1,5 +1,5 @@
 require "../component_spec_helper"
-require "../../../src/components/shared/flash_message_component"
+require "../../../src/views/components/shared/flash_message_component"
 
 describe Components::Shared::FlashMessageComponent do
   describe "rendering" do

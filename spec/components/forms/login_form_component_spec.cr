@@ -1,5 +1,5 @@
 require "../component_spec_helper"
-require "../../../src/components/forms/login_form_component"
+require "../../../src/views/components/forms/login_form_component"
 
 describe Components::Forms::LoginFormComponent do
   describe "initialization" do

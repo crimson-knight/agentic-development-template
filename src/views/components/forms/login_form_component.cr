@@ -1,4 +1,4 @@
-require "../../../lib/asset_pipeline/src/components/base/stateful_component"
+require "../../../../lib/asset_pipeline/src/components/base/stateful_component"
 require "../shared/icon_component"
 
 module Components

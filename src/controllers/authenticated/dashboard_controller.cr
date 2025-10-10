@@ -1,5 +1,5 @@
-require "../../components/pages/dashboard_component"
-require "../../components/layouts/application_layout"
+require "../../views/components/pages/dashboard_component"
+require "../../views/components/layouts/application_layout"
 
 class Authenticated::DashboardController < ApplicationController
   def index

@@ -1,5 +1,5 @@
 require "../component_spec_helper"
-require "../../../src/components/pages/home_page_component"
+require "../../../src/views/components/pages/home_page_component"
 
 describe Components::Pages::HomePageComponent do
   describe "rendering" do

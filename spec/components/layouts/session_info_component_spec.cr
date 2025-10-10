@@ -1,5 +1,5 @@
 require "../component_spec_helper"
-require "../../../src/components/layouts/session_info_component"
+require "../../../src/views/components/layouts/session_info_component"
 
 describe Components::Layouts::SessionInfoComponent do
   describe "rendering" do

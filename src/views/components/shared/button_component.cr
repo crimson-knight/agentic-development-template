@@ -1,7 +1,7 @@
-require "../../../lib/asset_pipeline/src/components/base/stateless_component"
-require "../../../lib/asset_pipeline/src/components/elements/forms/form_controls"
-require "../../../lib/asset_pipeline/src/components/elements/text/a"
-require "../../../lib/asset_pipeline/src/components/elements/grouping/span"
+require "../../../../lib/asset_pipeline/src/components/base/stateless_component"
+require "../../../../lib/asset_pipeline/src/components/elements/forms/form_controls"
+require "../../../../lib/asset_pipeline/src/components/elements/text/a"
+require "../../../../lib/asset_pipeline/src/components/elements/grouping/span"
 
 module Components
   module Shared

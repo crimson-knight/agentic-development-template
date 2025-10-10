@@ -1,5 +1,5 @@
-require "../../components/forms/login_form_component"
-require "../../components/layouts/application_layout"
+require "../../views/components/forms/login_form_component"
+require "../../views/components/layouts/application_layout"
 
 class Public::SessionController < ApplicationController
   property valid_email : String = ""

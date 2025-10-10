@@ -1,5 +1,5 @@
 require "../component_spec_helper"
-require "../../../src/components/layouts/navigation_component"
+require "../../../src/views/components/layouts/navigation_component"
 
 describe Components::Layouts::NavigationComponent do
   describe "rendering" do

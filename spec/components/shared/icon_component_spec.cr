@@ -1,5 +1,5 @@
 require "../component_spec_helper"
-require "../../../src/components/shared/icon_component"
+require "../../../src/views/components/shared/icon_component"
 
 describe Components::Shared::IconComponent do
   describe "rendering" do

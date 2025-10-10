@@ -6,12 +6,17 @@ This directory contains our application-specific components built using the Asse
 
 ## Directory Structure
 
+Following Rails conventions, all view-related code lives in `src/views/`.
+
 ```
-src/components/
-  shared/           # Reusable components used throughout the app
-  layouts/          # Layout components (navigation, footers, etc.)
-  pages/            # Full page components
-  forms/            # Form components with validation
+src/views/
+  components/
+    shared/           # Reusable components used throughout the app
+    layouts/          # Layout components (navigation, footers, etc.)
+    pages/            # Full page components
+    forms/            # Form components with validation
+  layouts/
+    mailer.ecr        # Email templates (still using ECR)
 ```
 
 ---
@@ -76,7 +81,7 @@ Tests live in matching `spec/components/{category}/` directory:
 
 ```crystal
 require "../component_spec_helper"
-require "../../../src/components/shared/component_name_component"
+require "../../../src/views/components/shared/component_name_component"
 
 describe Components::Shared::ComponentNameComponent do
   describe "rendering" do
@@ -104,7 +109,7 @@ end
 
 ## Component Categories
 
-### Shared Components (`src/components/shared/`)
+### Shared Components (`src/views/components/shared/`)
 
 Reusable, generic components used throughout the application.
 
@@ -131,7 +136,7 @@ button = Components::Shared::ButtonComponent.new(
 html = button.render
 ```
 
-### Layout Components (`src/components/layouts/`)
+### Layout Components (`src/views/components/layouts/`)
 
 Components that define page structure and common UI elements.
 
@@ -161,7 +166,7 @@ layout = Components::Layouts::ApplicationLayout.new(
 )
 ```
 
-### Page Components (`src/components/pages/`)
+### Page Components (`src/views/components/pages/`)
 
 Full-page components that represent entire views.
 
@@ -193,7 +198,7 @@ def index
 end
 ```
 
-### Form Components (`src/components/forms/`)
+### Form Components (`src/views/components/forms/`)
 
 Interactive forms with validation.
 
@@ -227,12 +232,12 @@ Each component file must explicitly require its dependencies:
 
 ```crystal
 # Base class
-require "../../../lib/asset_pipeline/src/components/base/stateless_component"
+require "../../../../lib/asset_pipeline/src/components/base/stateless_component"
 
 # Elements you'll use
-require "../../../lib/asset_pipeline/src/components/elements/grouping/div"
-require "../../../lib/asset_pipeline/src/components/elements/forms/form_controls"
-require "../../../lib/asset_pipeline/src/components/elements/text/a"
+require "../../../../lib/asset_pipeline/src/components/elements/grouping/div"
+require "../../../../lib/asset_pipeline/src/components/elements/forms/form_controls"
+require "../../../../lib/asset_pipeline/src/components/elements/text/a"
 ```
 
 ### 2. Use Elements, Not HTML Strings
@@ -429,7 +434,7 @@ crystal spec spec/components/ --verbose
 
 ### ButtonComponent (Shared)
 
-**File:** `src/components/shared/button_component.cr`
+**File:** `src/views/components/shared/button_component.cr`
 
 **Features:**
 - Variants: primary, secondary, danger
@@ -503,5 +508,6 @@ See `VIEW_MIGRATION_PLAN.md` for detailed specifications.
 ---
 
 **Last Updated:** 2025-10-10
-**Components Implemented:** 1 (ButtonComponent)
-**Test Coverage:** 100% for implemented components
+**Components Implemented:** 11 (5 shared, 3 layout, 2 page, 1 form)
+**Test Coverage:** 234/234 tests passing (100%)
+**ECR Templates:** Removed (component-based views only)

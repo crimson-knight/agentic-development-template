@@ -1,5 +1,5 @@
 require "../component_spec_helper"
-require "../../../src/components/shared/stat_card_component"
+require "../../../src/views/components/shared/stat_card_component"
 
 describe Components::Shared::StatCardComponent do
   describe "rendering" do

@@ -1,5 +1,5 @@
-require "../../components/pages/home_page_component"
-require "../../components/layouts/application_layout"
+require "../../views/components/pages/home_page_component"
+require "../../views/components/layouts/application_layout"
 
 class Public::HomeController < ApplicationController
   def index

@@ -1,5 +1,5 @@
 require "../component_spec_helper"
-require "../../../src/components/layouts/application_layout"
+require "../../../src/views/components/layouts/application_layout"
 
 describe Components::Layouts::ApplicationLayout do
   describe "rendering" do

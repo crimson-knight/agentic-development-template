@@ -1,5 +1,5 @@
 require "../component_spec_helper"
-require "../../../src/components/pages/dashboard_component"
+require "../../../src/views/components/pages/dashboard_component"
 
 describe Components::Pages::DashboardComponent do
   describe "rendering" do

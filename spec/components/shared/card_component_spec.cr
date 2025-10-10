@@ -1,5 +1,5 @@
 require "../component_spec_helper"
-require "../../../src/components/shared/card_component"
+require "../../../src/views/components/shared/card_component"
 
 describe Components::Shared::CardComponent do
   describe "rendering" do

@@ -1,4 +1,4 @@
-require "../../../lib/asset_pipeline/src/components/base/stateless_component"
+require "../../../../lib/asset_pipeline/src/components/base/stateless_component"
 require "../shared/stat_card_component"
 
 module Components

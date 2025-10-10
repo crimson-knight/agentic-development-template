@@ -1,7 +1,7 @@
-require "../../../lib/asset_pipeline/src/components/base/stateless_component"
-require "../../../lib/asset_pipeline/src/components/elements/grouping/div"
-require "../../../lib/asset_pipeline/src/components/elements/text/a"
-require "../../../lib/asset_pipeline/src/components/elements/grouping/p"
+require "../../../../lib/asset_pipeline/src/components/base/stateless_component"
+require "../../../../lib/asset_pipeline/src/components/elements/grouping/div"
+require "../../../../lib/asset_pipeline/src/components/elements/text/a"
+require "../../../../lib/asset_pipeline/src/components/elements/grouping/p"
 require "./icon_component"
 
 module Components
