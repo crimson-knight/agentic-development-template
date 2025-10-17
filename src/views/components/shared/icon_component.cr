@@ -39,6 +39,7 @@ module Components
 
         # Build SVG element manually (no Elements::Svg yet)
         svg_attrs = String.build do |str|
+          str << %( data-component="icon")
           str << %( class="#{class_string}")
           str << %( xmlns="http://www.w3.org/2000/svg")
           str << %( fill="#{fill}")

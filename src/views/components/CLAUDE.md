@@ -29,11 +29,66 @@ src/views/
 - Class names: `ComponentNameComponent` (e.g., `ButtonComponent`)
 - Modules: Components are namespaced under `Components::{Category}` (e.g., `Components::Shared::ButtonComponent`)
 
+### Data Attribute Conventions
+
+**CRITICAL:** All components MUST include identifying data attributes on their outermost wrapper element.
+
+**Why Data Attributes?**
+1. Easy to find in DOM: `document.querySelector('[data-component="button"]')`
+2. Test targeting: Stable selectors that don't break with styling changes
+3. Debugging: Know which component rendered which markup
+4. Stimulus integration: Natural pairing with Stimulus controllers
+5. Component ownership: Clear boundaries between components
+
+**Required Attributes:**
+- `data-component` - Component name in kebab-case (e.g., "button", "login-form")
+- `data-component-id` - Optional unique identifier for multiple instances
+
+**Optional Attributes:**
+- `data-variant` - For components with variants (primary, secondary, danger)
+- `data-state` - For stateful components (loading, idle, error, success)
+- `data-testid` - For specific test targeting
+
+**Examples:**
+
+```crystal
+# Button component
+html << "<button data-component=\"button\" "
+html << "data-variant=\"#{variant}\" "
+html << "data-size=\"#{size}\" "
+html << "type=\"button\">"
+
+# Card component with ID
+html << "<div data-component=\"card\" "
+html << "data-component-id=\"feature-#{index}\">"
+
+# Form component with state
+html << "<form data-component=\"login-form\" "
+html << "data-state=\"idle\" "
+html << "action=\"/login\" method=\"POST\">"
+```
+
+**Testing with Data Attributes:**
+
+```crystal
+it "includes data-component attribute" do
+  button = ButtonComponent.new(label: "Click")
+  button.render.should contain("data-component=\"button\"")
+end
+
+it "includes variant in data attribute" do
+  button = ButtonComponent.new(variant: "primary")
+  button.render.should contain("data-variant=\"primary\"")
+end
+```
+
+---
+
 ### File Structure Pattern
 
 ```crystal
-require "../../../lib/asset_pipeline/src/components/base/stateless_component"
-require "../../../lib/asset_pipeline/src/components/elements/..." # Required elements
+require "../../../../lib/asset_pipeline/src/components/base/stateless_component"
+require "../../../../lib/asset_pipeline/src/components/elements/..." # Required elements
 
 module Components
   module Shared  # or Layouts, Pages, Forms

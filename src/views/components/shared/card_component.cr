@@ -74,8 +74,8 @@ module Components
           end
         end
 
-        # Wrap in card div
-        "<div class=\"#{card_classes.join(" ")}\">#{content}</div>"
+        # Wrap in card div with data attributes
+        "<div data-component=\"card\" class=\"#{card_classes.join(" ")}\">#{content}</div>"
       end
 
       def css_selector : String

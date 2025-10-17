@@ -151,7 +151,8 @@ module Components
           end
 
           # Form
-          html << "<form class=\"mt-8 space-y-6\" action=\"#{action}\" method=\"POST\" data-controller=\"login\" data-action=\"submit->login#handleSubmit\">"
+          form_state = submitting ? "submitting" : "idle"
+          html << "<form data-component=\"login-form\" data-state=\"#{form_state}\" class=\"mt-8 space-y-6\" action=\"#{action}\" method=\"POST\" data-controller=\"login\" data-action=\"submit->login#handleSubmit\">"
 
           # CSRF token
           html << "<input type=\"hidden\" name=\"authenticity_token\" value=\"#{csrf_token}\">"

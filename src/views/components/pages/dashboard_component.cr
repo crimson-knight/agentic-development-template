@@ -57,6 +57,9 @@ module Components
 
         # Build HTML
         String.build do |html|
+          # Wrapper with data attribute
+          html << "<div data-component=\"dashboard-page\">"
+
           # Header
           html << "<div class=\"px-4 sm:px-6 lg:px-8\">"
           html << "<div class=\"sm:flex sm:items-center\">"
@@ -219,11 +222,14 @@ module Components
 
           html << "</div>"
           html << "</div>"
+
+          # Close wrapper
+          html << "</div>"
         end
       end
 
       def css_selector : String
-        ".px-4.sm\\:px-6.lg\\:px-8"
+        "[data-component=\"dashboard-page\"]"
       end
     end
   end

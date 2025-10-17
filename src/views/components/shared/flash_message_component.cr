@@ -79,7 +79,7 @@ module Components
 
         # Build HTML
         String.build do |html|
-          html << "<div class=\"#{config[:bg_color]} border #{config[:border_color]} rounded-lg p-4 mb-4 flex items-start\" role=\"alert\">"
+          html << "<div data-component=\"flash-message\" data-variant=\"#{type}\" class=\"#{config[:bg_color]} border #{config[:border_color]} rounded-lg p-4 mb-4 flex items-start\" role=\"alert\">"
 
           # Icon container
           html << "<div class=\"#{config[:icon_bg_color]} rounded-lg p-2 mr-3 flex-shrink-0\">"

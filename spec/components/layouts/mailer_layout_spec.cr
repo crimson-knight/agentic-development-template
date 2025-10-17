@@ -10,7 +10,8 @@ describe Components::Layouts::MailerLayout do
       rendered = mailer.render
 
       rendered.should contain("<!DOCTYPE html>")
-      rendered.should contain("<html lang=\"en\"")
+      rendered.should contain("<html data-component=\"mailer-layout\"")
+      rendered.should contain("lang=\"en\"")
       rendered.should contain("Test email content")
     end
 

@@ -90,7 +90,7 @@ module Components
         # Build complete HTML document
         String.build do |html|
           html << "<!doctype html>\n"
-          html << "<html class=\"h-full bg-gray-50\">\n"
+          html << "<html data-component=\"application-layout\" class=\"h-full bg-gray-50\">\n"
           html << "  <head>\n"
           html << "    <title>#{title}</title>\n"
           html << "    <meta charset=\"utf-8\" />\n"

@@ -41,7 +41,7 @@ module Components
 
         # Build HTML
         String.build do |html|
-          html << "<nav class=\"bg-white shadow-sm border-b border-gray-200\">"
+          html << "<nav data-component=\"navigation\" class=\"bg-white shadow-sm border-b border-gray-200\">"
           html << "<div class=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">"
           html << "<div class=\"flex justify-between h-16\">"
 

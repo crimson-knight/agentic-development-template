@@ -68,7 +68,7 @@ describe Components::Shared::ButtonComponent do
       )
 
       rendered = button.render
-      rendered.should contain("disabled=\"true\"")
+      rendered.should contain("disabled")
       rendered.should contain("class=\"btn btn-primary btn-medium disabled\"")
     end
 
@@ -88,6 +88,34 @@ describe Components::Shared::ButtonComponent do
       )
 
       button.render.should contain("type=\"submit\"")
+    end
+  end
+
+  describe "data attributes" do
+    it "includes data-component attribute" do
+      button = Components::Shared::ButtonComponent.new(label: "Test")
+      button.render.should contain("data-component=\"button\"")
+    end
+
+    it "includes data-variant attribute" do
+      button = Components::Shared::ButtonComponent.new(label: "Test", variant: "danger")
+      button.render.should contain("data-variant=\"danger\"")
+    end
+
+    it "includes data-size attribute" do
+      button = Components::Shared::ButtonComponent.new(label: "Test", size: "large")
+      button.render.should contain("data-size=\"large\"")
+    end
+
+    it "includes data attributes on link variant" do
+      button = Components::Shared::ButtonComponent.new(
+        label: "Test",
+        href: "/test",
+        variant: "secondary"
+      )
+      rendered = button.render
+      rendered.should contain("data-component=\"button\"")
+      rendered.should contain("data-variant=\"secondary\"")
     end
   end
 

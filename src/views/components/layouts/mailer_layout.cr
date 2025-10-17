@@ -33,7 +33,7 @@ module Components
         String.build do |html|
           # DOCTYPE and HTML opening with email-specific namespaces
           html << "<!DOCTYPE html>\n"
-          html << "<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n"
+          html << "<html data-component=\"mailer-layout\" lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n"
           html << "<head>\n"
           html << "  <meta charset=\"utf-8\">\n"
           html << "  <meta name=\"viewport\" content=\"width=device-width\">\n"

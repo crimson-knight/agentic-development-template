@@ -49,7 +49,7 @@ module Components
 
         # Build HTML
         String.build do |html|
-          html << "<div class=\"bg-white rounded-lg shadow-md p-6\">"
+          html << "<div data-component=\"stat-card\" data-variant=\"#{bg_color}\" class=\"bg-white rounded-lg shadow-md p-6\">"
 
           # Top section: icon and value
           html << "<div class=\"flex items-center justify-between mb-4\">"

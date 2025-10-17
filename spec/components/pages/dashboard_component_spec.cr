@@ -100,7 +100,7 @@ describe Components::Pages::DashboardComponent do
     it "returns correct selector" do
       dashboard = Components::Pages::DashboardComponent.new
 
-      dashboard.css_selector.should eq(".px-4.sm\\:px-6.lg\\:px-8")
+      dashboard.css_selector.should eq("[data-component=\"dashboard-page\"]")
     end
   end
 

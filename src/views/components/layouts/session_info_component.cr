@@ -34,7 +34,7 @@ module Components
 
         # Build HTML
         String.build do |html|
-          html << "<div class=\"flex items-center space-x-4\">"
+          html << "<div data-component=\"session-info\" class=\"flex items-center space-x-4\">"
 
           # User email
           html << "<span class=\"text-sm text-gray-700\">#{user_email}</span>"

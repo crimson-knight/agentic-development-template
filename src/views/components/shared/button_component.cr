@@ -42,58 +42,57 @@ module Components
         classes << additional_classes if additional_classes
         class_string = classes.join(" ")
 
-        # Render as link if href provided
-        if href
-          link = Elements::A.new(
-            href: href,
-            class: class_string
-          )
+        # Build HTML with data attributes
+        String.build do |html|
+          # Render as link if href provided
+          if href
+            html << "<a href=\"#{href}\" "
+            html << "class=\"#{class_string}\" "
+            html << "data-component=\"button\" "
+            html << "data-variant=\"#{variant}\" "
+            html << "data-size=\"#{size}\">"
 
-          # Add icon if provided
-          if icon
-            span = Elements::Span.new(class: "btn-icon")
-            span << icon
-            link << span
-            link << " "
+            # Add icon if provided
+            if icon
+              html << "<span class=\"btn-icon\">#{icon}</span> "
+            end
+
+            # Add label
+            html << label
+
+            # Add children
+            @children.each do |child|
+              html << " "
+              append_child_html(html, child)
+            end
+
+            html << "</a>"
+          else
+            # Render as button
+            html << "<button type=\"#{type}\" "
+            html << "class=\"#{class_string}\" "
+            html << "data-component=\"button\" "
+            html << "data-variant=\"#{variant}\" "
+            html << "data-size=\"#{size}\" "
+            html << "#{disabled ? "disabled" : ""}>"
+
+            # Add icon if provided
+            if icon
+              html << "<span class=\"btn-icon\">#{icon}</span> "
+            end
+
+            # Add label
+            html << label
+
+            # Add children
+            @children.each do |child|
+              html << " "
+              append_child_html(html, child)
+            end
+
+            html << "</button>"
           end
-
-          # Add label
-          link << label
-
-          # Add children
-          @children.each do |child|
-            link << " "
-            append_child(link, child)
-          end
-
-          return link.render
         end
-
-        # Render as button
-        button = Elements::Button.new(
-          type: type,
-          class: class_string,
-          disabled: disabled ? "true" : nil
-        )
-
-        # Add icon if provided
-        if icon
-          span = Elements::Span.new(class: "btn-icon")
-          span << icon
-          button << span
-          button << " "
-        end
-
-        # Add label
-        button << label
-
-        # Add children
-        @children.each do |child|
-          button << " "
-          append_child(button, child)
-        end
-
-        button.render
       end
 
       # CSS selector for testing
@@ -103,14 +102,14 @@ module Components
         ".btn.btn-#{variant}.btn-#{size}"
       end
 
-      private def append_child(parent, child)
+      private def append_child_html(html, child)
         case child
         when Component
-          parent << child.render
+          html << child.render
         when Elements::HTMLElement
-          parent << child
+          html << child.render
         when String
-          parent << child
+          html << child
         end
       end
     end
