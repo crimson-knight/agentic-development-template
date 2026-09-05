@@ -1,58 +1,27 @@
 class Public::SessionController < ApplicationController
-  getter user = User.new
-  property valid_email : String = ""
-  property valid_password : String = ""
-
-  before_action do
-    only [:create] { validate_params }
-  end
-
   def new
-    user = User.new
     render("new.ecr")
   end
 
   def create
-    raise "Email param is required" if @valid_email.nil?
-    raise "Password param is required" if @valid_password.nil?
-
-    user_authed_successfully = User.find_by!({:email => @valid_email}).try(&.authenticate(@valid_password))
-
-    if user_authed_successfully
-      session[:user_id] = user_authed_successfully.id
-
-      flash[:info] = "Successfully logged in!"
-      respond_with do
-        html { redirect_to "/dashboard" }
-        json { %({"redirect_url": "/dashboard"}) }
+    email = params["email"]?.to_s.strip.downcase
+    password = params["password"]?.to_s
+    user = User.find_by({:email => email})
+    destination = "/login"
+    if user && !password.empty? && password.bytesize <= 71 && user.authenticate(password)
+      if user.session_version.empty?
+        user.session_version = Random::Secure.hex(32)
+        user.save!
       end
+      establish_session(user)
+      flash[:info] = "Successfully signed in."
+      destination = "/dashboard"
     else
       flash[:danger] = "There was a problem with the email or password. Please try again."
-      respond_with do
-        html { redirect_to "/login" }
-        json { %({"redirect_url": "/login"}) }
-      end
     end
-
-    # The user was not found, this catches the error and handles the error message
-
-  rescue e
-    flash[:danger] = "There was an error while trying to log in. Please try again."
-    Log.error { e.message }
     respond_with do
-      json { %({"redirect_url": "/login"}) }
-    end
-  end
-
-  private def validate_params
-    if email = params["email"]
-      # Add additional validation here, ie: email format, allowed domains, etc.
-      @valid_email = email
-    end
-
-    if password = params["password"]
-      # Add additional validation here, ie: password length, complexity, etc.
-      @valid_password = password
+      html { redirect_to destination }
+      json { {redirect_url: destination}.to_json }
     end
   end
 end

@@ -9,7 +9,7 @@
 production.yml
 .DS_Store
 /bin/
-/node_modules
+node_modules/
 /public/dist
 sam
 sam.dwarf

@@ -1,0 +1,6 @@
+{
+  "name": "oss-account-workspace-browser-gate",
+  "private": true,
+  "version": "1.0.0",
+  "devDependencies": { "playwright": "1.62.1" }
+}

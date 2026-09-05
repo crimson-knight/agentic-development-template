@@ -8,6 +8,7 @@
 # Any uncommented setting here will override the YAML with the value set here.
 
 Amber::Server.configure do |settings|
+  settings.logging.filter = %w(password password_confirmation current_password confirm_password Cookie cookie Authorization authorization Set-Cookie amber.session session_version csrf.token _csrf X-CSRF-TOKEN)
   # Use your environment variables settings here.
   #
   # Name: A name that identifies this application. This is not internally

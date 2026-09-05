@@ -13,6 +13,7 @@ FRONT_LOADER = AssetPipeline::FrontLoader.new(js_source_path: Path["src/javascri
 
   # Default login controller for login form from `GET /login`
   import_map.add_import("login_controller", "src/javascript/login_controller.js")
+  import_map.add_import("account_workspace", "src/javascript/account_workspace.js")
 
   # --- Add new controllers below here ---
 
