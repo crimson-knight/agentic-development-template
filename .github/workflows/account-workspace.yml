@@ -34,13 +34,16 @@ jobs:
     env:
       AMBER_ENV: test
       APP_ENV: test
-      CRYSTAL_CACHE_DIR: ${{ runner.temp }}/account-crystal-cache
       DATABASE_URL: postgres://postgres:fixture-only@127.0.0.1:5432/oss_owner_workspace_test_20260904_01
       SENDGRID_API_KEY: ''
       SMTP_USERNAME: ''
       SMTP_PASSWORD: ''
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Isolate the compiler cache after a runner is assigned
+        run: |
+          mkdir -p "$RUNNER_TEMP/account-crystal-cache"
+          printf 'CRYSTAL_CACHE_DIR=%s\n' "$RUNNER_TEMP/account-crystal-cache" >> "$GITHUB_ENV"
       - uses: crystal-lang/install-crystal@d8ef131ecec0352ce0e39b81b0a6d95def58fe2f # v1
         with:
           crystal: 1.21.0
