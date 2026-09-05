@@ -1,0 +1,28 @@
+<section class="workspace stack" data-component="account-settings">
+  <header class="page-heading"><p class="eyebrow">Your account</p><h1>Profile &amp; settings</h1><p class="muted">The details and security for your own account.</p></header>
+  <% if error %><div class="notice notice-error" role="alert"><%= html_escape(error) %></div><% end %>
+  <div class="workspace-grid">
+    <section class="panel stack" id="profile" aria-labelledby="profile-heading">
+      <h2 id="profile-heading">Profile</h2>
+      <form class="stack" action="/settings/profile" method="post" data-account-form>
+        <%= csrf_tag %>
+        <div class="field"><label for="display_name">Your name</label><input id="display_name" name="display_name" autocomplete="name" maxlength="100" value="<%= html_escape(display_name) %>" aria-describedby="name-hint"><p class="hint" id="name-hint">How you would like to be addressed. Up to 100 characters.</p></div>
+        <div class="field"><p class="field-label" id="email-label">Sign-in email</p><p id="account-email" class="readonly-value" aria-labelledby="email-label"><%= html_escape(account.email) %></p><p class="hint" id="email-hint">Email changes are not available here. Your sign-in and notification identity stay unchanged.</p></div>
+        <button class="button" type="submit" data-busy-label="Saving…">Save profile</button>
+      </form>
+      <dl class="facts"><div><dt>Account created</dt><dd><%= account.created_at.try(&.to_s("%B %-d, %Y")) || "Not recorded" %></dd></div></dl>
+    </section>
+    <section class="panel stack" id="security" aria-labelledby="security-heading">
+      <h2 id="security-heading">Sign-in security</h2><p class="muted">Changing your password signs out other sessions. This browser stays signed in.</p>
+      <form class="stack" action="/settings/password" method="post" data-account-form data-password-form>
+        <%= csrf_tag %>
+        <div class="field"><label for="current-password">Current password</label><input id="current-password" name="current_password" type="password" autocomplete="current-password" required></div>
+        <div class="field"><label for="new-password">New password</label><input id="new-password" name="password" type="password" autocomplete="new-password" required aria-describedby="password-rules"></div>
+        <div class="field"><label for="password-confirmation">Confirm new password</label><input id="password-confirmation" name="password_confirmation" type="password" autocomplete="new-password" required></div>
+        <ul class="password-rules" id="password-rules" aria-live="polite"><li data-rule="length">At least 8 characters</li><li data-rule="bytes">No more than 71 bytes</li><li data-rule="match">New passwords match</li></ul>
+        <button class="button" type="submit" data-busy-label="Changing password…">Change password</button>
+      </form>
+      <details><summary>Sign out other sessions</summary><form class="stack details-content" action="/settings/sessions" method="post" data-account-form><%= csrf_tag %><p class="muted">Use this if you left your account signed in elsewhere. No device list is collected by this template.</p><div class="field"><label for="session-password">Confirm your current password</label><input id="session-password" name="current_password" type="password" autocomplete="current-password" required></div><button class="button button-secondary" type="submit" data-busy-label="Signing out…">Sign out other sessions</button></form></details>
+    </section>
+  </div>
+</section>

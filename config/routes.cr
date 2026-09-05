@@ -6,13 +6,11 @@ Amber::Server.configure do
     plug Amber::Pipe::Logger.new
     plug Amber::Pipe::Session.new
     plug Amber::Pipe::Flash.new
-    plug Amber::Pipe::CSRF.new
-
-    # Add the CurrentUserPipe to handle authentication
+    plug AccountCSRFPipe.new
+    plug CurrentUserPipe.new
   end
 
   pipeline :auth do
-    plug CurrentUserPipe.new
     plug AuthenticateUser.new
   end
 
@@ -37,7 +35,13 @@ Amber::Server.configure do
   routes :auth do
     # Routes only available to authenticated users
     get "/dashboard", Authenticated::DashboardController, :index
-    get "/logout", Authenticated::SessionController, :destroy
+    get "/settings", Authenticated::SettingsController, :index
+    get "/profile", Authenticated::SettingsController, :index
+    post "/settings/profile", Authenticated::SettingsController, :profile
+    post "/settings/password", Authenticated::SettingsController, :password
+    post "/settings/sessions", Authenticated::SettingsController, :sessions
+    get "/logout", Authenticated::SessionController, :new
+    post "/logout", Authenticated::SessionController, :destroy
     
     # Authenticated MCP endpoints
     get "/mcp/tools", Authenticated::McpToolsController, :list

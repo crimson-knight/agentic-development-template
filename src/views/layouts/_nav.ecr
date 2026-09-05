@@ -1,9 +1,7 @@
-<%- active_home = context.request.path == "/" ? "border-indigo-500 text-gray-900" : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" %>
-<a href="/" class="<%= active_home %> inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200">
-  Home
-</a>
-<%- if !logged_in? %>
-  <a href="/login" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200">
-    Sign In
-  </a>
-<%- end %>
+<% if logged_in? %>
+  <a href="/dashboard"<% if request.path == "/dashboard" %> aria-current="page"<% end %>>Workspace</a>
+  <a href="/settings"<% if request.path == "/settings" || request.path == "/profile" %> aria-current="page"<% end %>>Profile &amp; settings</a>
+  <a href="/">View website</a>
+<% else %>
+  <a href="/">Home</a><a href="/login">Sign in</a>
+<% end %>

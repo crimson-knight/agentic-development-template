@@ -18,42 +18,41 @@ targets:
 dependencies:
   amber:
     github: crimson-knight/amber
-    branch: master
+    commit: 84c09b67d98908d502d817dfa60acd2c03ebeb46
 
   i18n:
     github: crimson-knight/i18n.cr
-    version: ~> 0.4.1
+    version: 0.4.1
 
   quartz_mailer:
     github: amberframework/quartz-mailer
-    version: ~> 0.8.0
+    version: 0.8.0
 
   jasper_helpers:
     github: amberframework/jasper-helpers
-    version: ~> 1.2.2 
+    version: 1.2.2
 
   pg:
     github: will/crystal-pg
-    version: ~> 0.26.0
+    version: 0.26.0
 
   jennifer:
     github: imdrasil/jennifer.cr
-    branch: master
+    commit: 0f4e4bd58112dafc92ca0d76814001a66a50d745
 
   asset_pipeline:
     github: amberframework/asset_pipeline
-    # version: ~> 0.34.0
-    branch: main
+    commit: a2442c3a0278782eb4e0c44a4f249a5577840b24
 
   mcprotocol:
     github: crimson-knight/mcprotocol
-    branch: main
+    commit: a199d0494b3a7f2046676d650e67db2e6e22f66c
 
 development_dependencies:
   ameba:
     github: crystal-ameba/ameba
-    version: ~> 1.5.0
+    version: 1.5.0
 
   sam:
     github: imdrasil/sam.cr
-    version: ~> 0.5.0
+    version: 0.5.0

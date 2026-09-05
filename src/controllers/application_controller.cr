@@ -12,4 +12,16 @@ class ApplicationController < Amber::Controller::Base
   def logged_in?
     get_current_user.present?
   end
+
+  private def establish_session(user : User)
+    session.delete("id")
+    session.delete("csrf.token")
+    session[:user_id] = user.id
+    session[:session_version] = user.session_version
+    context.current_user = user
+  end
+
+  private def html_escape(value) : String
+    HTML.escape(value.to_s)
+  end
 end

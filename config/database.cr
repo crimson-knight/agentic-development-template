@@ -1,5 +1,6 @@
 require "jennifer"
 require "jennifer/adapter/postgres"
+require "./jennifer_compat"
 
 {% if @top_level.has_constant? "Spec" %}
   APP_ENV = "test"

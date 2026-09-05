@@ -1,0 +1,97 @@
+name: Account workspace
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: account-workspace-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  account-workspace:
+    name: Account security and mobile browser
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17.6@sha256:00bc86618629af00d2937fdc5a5d63db3ff8450acf52f0636ec813c7f4902929
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: fixture-only
+          POSTGRES_DB: oss_owner_workspace_test_20260904_01
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      AMBER_ENV: test
+      APP_ENV: test
+      DATABASE_URL: postgres://postgres:fixture-only@127.0.0.1:5432/oss_owner_workspace_test_20260904_01
+      SENDGRID_API_KEY: ''
+      SMTP_USERNAME: ''
+      SMTP_PASSWORD: ''
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Isolate the compiler cache after a runner is assigned
+        run: |
+          mkdir -p "$RUNNER_TEMP/account-crystal-cache"
+          printf 'CRYSTAL_CACHE_DIR=%s\n' "$RUNNER_TEMP/account-crystal-cache" >> "$GITHUB_ENV"
+      - uses: crystal-lang/install-crystal@d8ef131ecec0352ce0e39b81b0a6d95def58fe2f # v1
+        with:
+          crystal: 1.21.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Install exact dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y libxml2-dev libssl-dev libyaml-dev libgmp-dev postgresql-client
+          shards install --frozen --skip-postinstall --skip-executables
+          npm ci --ignore-scripts --prefix tooling/browser
+          tooling/browser/node_modules/.bin/playwright install --with-deps chromium
+      - name: Check account source and database isolation
+        run: |
+          node --check src/javascript/account_workspace.js
+          node --check tooling/verify_account_workspace_browser.cjs
+          crystal tool format --check src/controllers/authenticated/settings_controller.cr src/pipes/account_csrf.cr config/jennifer_compat.cr spec/controllers/account_workspace_spec.cr spec/models/account_profile_spec.cr tooling/seed_account_workspace_fixture.cr
+          if DATABASE_URL=postgres://postgres:fixture-only@127.0.0.1:5432/not-a-fixture crystal spec -Dwithout_mt --no-color > "$RUNNER_TEMP/isolation.log" 2>&1; then
+            echo 'Unsafe database target unexpectedly accepted'; exit 1
+          fi
+          grep -q 'dedicated local oss_owner_workspace_test_20260904_01' "$RUNNER_TEMP/isolation.log"
+      - name: Run all real database and security regressions
+        run: crystal spec -Dwithout_mt --no-color
+      - name: Compile application and migration entry point
+        run: |
+          mkdir -p bin
+          crystal build sam.cr -o sam
+          crystal build src/agentc_app_template_oss.cr -Dwithout_mt -o bin/account-workspace
+      - name: Run desktop and mobile browser acceptance without email
+        env:
+          DATABASE_URL: postgres://postgres:fixture-only@127.0.0.1:5432/oss_owner_workspace_browser_20260904_01
+          PGPASSWORD: fixture-only
+          ACCOUNT_WORKSPACE_FIXTURE: '1'
+          HOST: 127.0.0.1
+          PORT: '43282'
+        run: |
+          createdb -h 127.0.0.1 -U postgres oss_owner_workspace_browser_20260904_01
+          crystal run tooling/seed_account_workspace_fixture.cr -Dwithout_mt
+          ./bin/account-workspace > "$RUNNER_TEMP/account-server.log" 2>&1 &
+          fixture_pid=$!
+          trap 'kill "$fixture_pid" 2>/dev/null || true' EXIT
+          ready=0
+          for attempt in $(seq 1 45); do
+            if curl --fail --silent http://127.0.0.1:43282/login >/dev/null; then ready=1; break; fi
+            sleep 1
+          done
+          test "$ready" = 1 || { tail -n 80 "$RUNNER_TEMP/account-server.log"; exit 1; }
+          NODE_PATH="$PWD/tooling/browser/node_modules" ACCOUNT_WORKSPACE_OUTPUT="$RUNNER_TEMP/account-browser-proof" node tooling/verify_account_workspace_browser.cjs
+          # Deliberately no artifact uploads: the JSON result is a durable job log.
+          cat "$RUNNER_TEMP/account-browser-proof/result.json"
