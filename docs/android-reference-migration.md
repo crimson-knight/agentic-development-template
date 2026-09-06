@@ -157,5 +157,39 @@ into `lib/` (`shards install --without-development --skip-executables`),
 `mobile/android/android.sh doctor` passes and `mobile/android/android.sh build`
 packages both ABIs, the debug APK and the release bundle with matching native
 debug symbols in 52 seconds on the compile/target 36 toolchain. The three-screen
-emulator flow against a live account server was not re-run in this pass; it
-still requires the task-owned database and a TLS origin as documented above.
+emulator flow against a live account server is recorded in the next section.
+
+## September 6 — live three-screen flow on an API 35 emulator
+
+Evidence root: `~/android_target_evidence/2026-09-06-claude/agentc-live-flow-api35-emulator-5556/`.
+Only the task-owned database `agentc_android_20260906_21aec9bc` was created; the
+forward migration applied all three migrations (`agentc-migrate.log`) and the
+guarded seed created the synthetic reference account (`agentc-seed.log`).
+A task-only CA and a `localhost` certificate (SAN `localhost`, `127.0.0.1`,
+three-day validity) were generated under the job directory; the public CA is
+kept with the evidence, the keys are not. The actual application binary served
+`https://127.0.0.1:38248` in `AMBER_ENV=development` with direct TLS and
+rejected an unauthenticated account request with 401 before anything else ran.
+
+`scripts/native_reference_account_smoke.cr` passed against that origin
+(`agentc-account-smoke.log`): TLS trust, real web CSRF, native sign-in, shared
+Unicode edits in both directions, escaping, duplicate headers, pre-body
+rejection and logout. `mobile/android/android.sh test emulator-5556` (API 35,
+arm64, port mapped with `adb reverse` for the run only and removed afterward)
+then passed: every required host unit report, ABI/ELF/symbol checks, and
+**OK (13 tests)** on the device, including
+`realAccountFlowUsesProtectedSessionAndSharedSettingsAcrossRecreation` with the
+sign-in, dashboard, settings, restored-account and relaunch captures under
+`screenshots/`. The database confirms the device edit independently: the
+reference account's display name is the Unicode value the suite set, and the
+native session table is empty after sign-out. The server and the port mapping
+were stopped afterward; the task database and evidence remain.
+
+One caveat belongs to the branch, not the flow. Commit 9716cac removed the
+`i18n`, `mysql` and `sqlite3` shards while `config/application.cr` and
+`config/database.cr` still require them, so the server, the seed script and
+the specs do not compile from a clean `shards install` on this branch. This
+run projected the main checkout's installed copies of those shards behind the
+worktree's own `lib/` through `CRYSTAL_PATH` (`agentc-env.sh` in the evidence)
+and changed no tracked file. Either dropping the three requires or restoring
+the three shards is a one-commit fix that needs a decision.
