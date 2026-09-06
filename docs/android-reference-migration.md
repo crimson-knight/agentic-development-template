@@ -145,3 +145,17 @@ checkpoint is `docs/android-agentc-native-accounts-proof-2026-09-05.md`, with
 evidence under `/tmp/agentc-android-accounts.32oJ8d`. It records real native sign-in,
 exact Unicode settings, protected different-process restoration and logout on
 the isolated ARM64 API 35 emulator. The full Android goal remains active.
+
+## September 6 — commit-pinned dependencies
+
+`shard.yml` no longer carries branch references. Amber pins the native-facade
+commit `ab90eae9` on `crimson-knight/amber` and AssetPipeline pins the API 36
+migration commit `4c40068c` on `crimson-knight/asset_pipeline`; grant, gemma,
+mcprotocol and micrate pin the commits the lock already resolved, and the lock
+was rewritten for the two Android-capable shards only. With those installed
+into `lib/` (`shards install --without-development --skip-executables`),
+`mobile/android/android.sh doctor` passes and `mobile/android/android.sh build`
+packages both ABIs, the debug APK and the release bundle with matching native
+debug symbols in 52 seconds on the compile/target 36 toolchain. The three-screen
+emulator flow against a live account server was not re-run in this pass; it
+still requires the task-owned database and a TLS origin as documented above.
