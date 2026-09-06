@@ -1,0 +1,123 @@
+# Native capability manifest for Amber native applications.
+# Edit this file to declare shared metadata and explicit platform capabilities.
+# Capability declarations are not runtime permission grants or implementation proof.
+# Amber CLI owns mobile/apple/generated/**/*; keep hand edits in mobile/ios/Sources/**/*.
+
+---
+schema_version: 2
+apple:
+  bundle_identifier: com.example.agentc.app.template.oss
+  minimum_ios_version: "16.1"
+  windows:
+  - identifier: main
+    title: AgentcAppTemplateOss
+    default_size:
+    - 1200
+    - 820
+  menu_bar:
+    enabled: false
+  status_bar:
+    enabled: false
+  notifications:
+    enabled: true
+    categories:
+    - identifier: general-updates
+      actions:
+      - identifier: open-app
+        title: Open AgentcAppTemplateOss
+        kind: default
+        options:
+        - foreground
+        is_enabled: true
+      intent_identifiers: []
+      options:
+      - custom_dismiss_action
+      is_enabled: true
+  shortcuts:
+    enabled: true
+    shortcuts:
+    - title: Open AgentcAppTemplateOss
+      identifier: open-agentc-app-template-oss
+      subtitle: Bring AgentcAppTemplateOss to the foreground
+      summary: Opens the main AgentcAppTemplateOss workspace
+      icon: app
+      phrases:
+      - Open AgentcAppTemplateOss
+      - Show AgentcAppTemplateOss
+      parameters: []
+      is_enabled: true
+      is_discoverable: true
+  quick_actions:
+    enabled: true
+    actions:
+    - type: com.example.agentc.app.template.oss.open
+      title: Open AgentcAppTemplateOss
+      subtitle: Jump back into the app
+      system_image: app
+      user_info: {}
+  widgets:
+    enabled: true
+    widgets:
+    - title: AgentcAppTemplateOss Status
+      identifier: agentc-app-template-oss-status
+      summary: Shows the latest AgentcAppTemplateOss state
+      placements:
+      - surface: home_screen
+        families:
+        - systemSmall
+        - systemMedium
+        timeline_intent: snapshot
+        refresh_policy: after:15m
+      is_enabled: true
+  live_activities:
+    enabled: true
+    activities:
+    - attributes_type: AgentcAppTemplateOssActivityAttributes
+      identifier: agentc-app-template-oss-live-activity
+      attributes:
+        phase: idle
+      content_state:
+        status: ready
+      update_intent:
+        identifier: open-agentc-app-template-oss
+        title: Open AgentcAppTemplateOss
+        subtitle: Resume your current flow
+        system_image: app
+        user_info: {}
+        is_enabled: true
+      is_active: true
+app:
+  identifier: com.example.agentc.app.template.oss
+  display_name: AgentC
+  version: 0.1.0
+  build_number: 1
+  targets:
+  - web
+  - android
+android:
+  application_id: com.example.agentc.app.template.oss
+  minimum_sdk: 31
+  target_sdk: 35
+  compile_sdk: 35
+  abis:
+  - arm64-v8a
+  - x86_64
+  permissions: []
+  features: []
+  deep_links: []
+  capabilities:
+    network: true
+    files: app_private
+    camera: false
+    microphone: false
+    location: none
+    notifications: false
+    background: none
+  notification_channels: []
+  appearance:
+    icon: '@mipmap/ic_launcher'
+    round_icon: '@mipmap/ic_launcher_round'
+    theme: '@style/Theme.App'
+    splash_background: '@color/splash_background'
+  allow_cleartext_traffic: false
+  allow_backup: false

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="app_background">#141218</color>
+  <color name="splash_background">#141218</color>
+  <color name="launcher_background">#3457D5</color>
+  <bool name="light_system_bars">false</bool>
+</resources>
