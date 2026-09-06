@@ -1,0 +1,1 @@
+Mailers are similar to how Rails views handle emails and their templates. It's ideal to treat every mailer like a plain text view, but if you do create an HTML view then you'll need to have all of the styling in-line in order for the styling to render properly in the users inbox.

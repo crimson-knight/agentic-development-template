@@ -2,23 +2,20 @@ name: agentc_app_template_oss
 version: 0.1.0
 
 authors:
-  - you <unknown@unknown.com>
+  - AgentC Consulting <engineering@agentc.consulting>
 
 crystal: 1.14.0
 
-license: UNLICENSED
+license: MIT
 
 targets:
   agentc_app_template_oss:
     main: src/agentc_app_template_oss.cr
 
-  amber:
-    main: lib/amber/src/amber/cli.cr
-
 dependencies:
   amber:
     github: crimson-knight/amber
-    branch: master
+    branch: v2-dev
 
   quartz_mailer:
     github: amberframework/quartz-mailer

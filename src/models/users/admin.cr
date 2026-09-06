@@ -9,6 +9,7 @@ module Users
     column id : Int64, primary: true
     column email : String = ""
     column password_digest : String = ""
+    column display_name : String = ""
     column api_key : String?
     column api_secret : String?
     column last_login_at : Time?

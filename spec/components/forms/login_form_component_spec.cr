@@ -45,7 +45,9 @@ describe Components::Forms::LoginFormComponent do
       form = Components::Forms::LoginFormComponent.new(csrf_token: "abc123")
       rendered = form.render
 
-      rendered.should contain("name=\"authenticity_token\"")
+      # Both installed and current Amber V2 CSRF pipes read PARAM_KEY=_csrf.
+      rendered.should contain("name=\"_csrf\"")
+      rendered.should_not contain("name=\"authenticity_token\"")
       rendered.should contain("value=\"abc123\"")
     end
 

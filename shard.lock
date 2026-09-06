@@ -2,11 +2,7 @@ version: 2.0
 shards:
   amber:
     git: https://github.com/crimson-knight/amber.git
-    version: 1.4.1+git.commit.84c09b67d98908d502d817dfa60acd2c03ebeb46
-
-  amber_router:
-    git: https://github.com/amberframework/amber-router.git
-    version: 0.4.4
+    version: 2.0.0-dev+git.commit.c50ab732408fa9e01404cd872fca05935ddbf795
 
   ameba:
     git: https://github.com/crystal-ameba/ameba.git
@@ -24,14 +20,6 @@ shards:
     git: https://github.com/taylorfinnell/awscr-signer.git
     version: 0.8.2
 
-  backtracer:
-    git: https://github.com/sija/backtracer.cr.git
-    version: 1.2.4
-
-  compiled_license:
-    git: https://github.com/elorest/compiled_license.git
-    version: 1.2.2
-
   content_disposition:
     git: https://github.com/jetrockets/content_disposition.cr.git
     version: 1.2.0
@@ -44,17 +32,13 @@ shards:
     git: https://github.com/arcage/crystal-email.git
     version: 0.6.4
 
-  exception_page:
-    git: https://github.com/crystal-loot/exception_page.git
-    version: 0.5.0
-
   gemma:
     git: https://github.com/crimson-knight/gemma.git
     version: 0.6.5+git.commit.1ea830cab5a249383760e07f0f6eda33d0a866ce
 
   grant:
     git: https://github.com/crimson-knight/grant.git
-    version: 0.23.4+git.commit.bda8cd3166e24c6587370fa6857d3eb94c8ba833
+    version: 0.23.4+git.commit.80fa83649e5eb6501759f528299f6f78f62d4bd7
 
   habitat:
     git: https://github.com/luckyframework/habitat.git
@@ -79,8 +63,4 @@ shards:
   quartz_mailer:
     git: https://github.com/amberframework/quartz-mailer.git
     version: 0.8.0
-
-  slang:
-    git: https://github.com/jeromegn/slang.git
-    version: 1.7.3
 

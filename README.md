@@ -1,77 +1,100 @@
-# AgentC App Template OSS Version v1.0.0-alpha
+# AgentC App Template (OSS)
 
-[![Amber Framework](https://img.shields.io/badge/using-amber_framework-orange.svg)](https://amberframework.org)
+A batteries-included **Crystal + [Amber](https://amberframework.org)** web app
+template. Authentication, sessions, email, file storage, a typed component view
+system, and database migrations are already wired up — so you can start building
+your idea instead of your plumbing.
 
-This is a project written using [Amber](https://amberframework.org) and [Crystal](https://crystal-lang.org/).
+This is the open-source foundation from [AgentC](https://agentc.consulting).
+It runs on **stock Crystal and stock Shards** — no special toolchain required.
+MIT licensed: fork it, ship it, sell it.
 
-This application template is meant to get you started using Amber to create AI powered modern applications that take advantage of modern hardware.
+---
 
-By using AI, and "clever" prompt engineering, this template is meant to empower _technically dangerous_ people.
+## Quick start (5 steps)
 
-## Are you a _technically dangerous_ person?
+For macOS or Linux users comfortable with a terminal.
 
-You may be a _technically dangerous_ person if you:
-- Feel comfortable trying new apps out. YouTube or content creator videos are a great source of ideas and inspiration.
-- Maybe you've tried no-code tools ranging from Zapier to Webflow and thought "this is great, but I want more customization than what this kind of tool can do".
-- You're hyped about what AI means for changing how we write applications.
-- You're willing to question long-held beliefs about how software is built.
-- You have technical ideas, but you're just not a "software engineer".
-- You may or may not have tried following some free coding classes to try and figure out simple things. (Psst! Have you made something run? 🤨 You have?! Yay! 👏)
+```bash
+# 1. Create your repo from this template, then clone & enter it
+gh repo create my-app --template AgentC-Consulting/agentc-app-template --public --clone
+cd my-app
 
-You're in the right place. Welcome, fellow _technically dangerous_ person!
+# 2. Install Crystal + PostgreSQL (skip any you already have)
+#    macOS:  brew install crystal postgresql@17 && brew services start postgresql@17
+#    Linux:  see https://crystal-lang.org/install/  +  apt install postgresql
 
-## Before Getting Started - Write Code Without Writing Any Code
+# 3. One-command setup: deps, .env, databases, migrations, seeds
+bin/setup
 
-This template works around a few ideas that [AgentC](https://agentc.consulting) has been cooking up in the lab for a while now. Here's three core principles that we've been exploring:
-1. **We can already accurately describe software functionalityfrom within natural language.**
-2. **We can use AI to generate code that will help us build the kind of application we want.**
-3. **Most SaaS application structures are well understood and stable, aka there are no new problems to solve here.**
-4. **We can use strong opinions on how to solve a problem to make it easier for AI to generate complete, working code.**
+# 4. Start the app
+bin/server            # → http://localhost:3000
 
-Conclusion: We can use AI to generate code that will help us build the kind of application we want, faster and more robust than ever before.
+# 5. (optional) Make it yours — rename the app in one command
+bin/new-app my_app
+```
 
-This application template serves to fullfil that conclusion.
+That's it. `bin/setup` is idempotent — re-run it any time.
 
-## Prerequisites
+---
 
-This project requires [Cursor](https://www.cursor.sh/). 
-Everything is based around you being on a Mac [with Apple Silicon](https://support.apple.com/en-us/HT211849).
-You've installed [Homebrew](https://brew.sh/), and you're comfortable with using it to install other dependencies.
+## What's included
 
-Never heard of some of these things? _Technically dangerous_ people don't let things stop them 😉 also, hop into the [Amber Discord](https://discord.gg/JKCczAEh4D) and ask questions so we can improve these docs.
+| Area | What you get |
+|---|---|
+| **Auth** | Email + password (BCrypt), sessions, login/logout, `Users::Regular` + `Users::Admin` types |
+| **Email** | [Quartz Mailer](https://github.com/amberframework/quartz-mailer): welcome, password-reset, verification templates (component-based) |
+| **Database** | [Grant ORM](https://github.com/crimson-knight/grant) (Active Record-style) on PostgreSQL, `.sql` migrations via [micrate](https://github.com/amberframework/micrate) |
+| **File storage** | [Gemma](https://github.com/crimson-knight/gemma): local in dev, S3/DigitalOcean Spaces in prod |
+| **Views** | Type-safe, cacheable component system ([asset_pipeline](https://github.com/amberframework/asset_pipeline)) — not string templates |
+| **AI-ready** | [MCProtocol](https://github.com/crimson-knight/mcprotocol) client + an MCP tools registry |
+| **Tests** | `crystal spec` suite covering controllers, components, and auth |
 
-## Nerdy Technical Details
+> Looking for MFA, OAuth SSO, organizations/teams, RBAC, audit logging, and
+> SOC 2 / ISO 27001 compliance scaffolding? Those live in the **premium**
+> template, which builds on this core.
 
-_You can skip this section if you're not interested in the nitty-gritty details._ This application template uses a specific set of highly capable, strongly opinionated and enterprise tested tools and design patterns. Here are some of the top level ones that most nerds love to talk about.
+## Daily commands
 
-- Underlying language: [Crystal](https://crystal-lang.org/) - The programming language used to build this application.
-- Web app framework: [Amber](https://amberframework.org) - The web app framework used to build this application.
-- Database: [PostgreSQL](https://www.postgresql.org/) - The database used to store this application's data.
-- Frontend Styling: [CSS3](https://developer.mozilla.org/en-US/docs/Web/CSS) - The styling language used to style this application's frontend. Nothing special here actually.
-- Frontend Framework: [HTML5](https://developer.mozilla.org/en-US/docs/Web/HTML) - The markup language used to build this application's frontend. Nothing special here actually.
-- Frontend JavaScript: [StimulusJS](https://stimulus.hotwired.dev/) - The JavaScript library used to add interactivity to this application's frontend.
-- AI inference interface: [Llamero](https://github.com/crimson-knight/llamero) - The library used to interface with the AI models for this application.
+```bash
+bin/server                 # run the app (loads .env)
+crystal spec               # run the test suite
+bin/micrate up             # apply new migrations  (bin/setup builds bin/micrate)
+bin/micrate status         # see migration state
+crystal tool format        # format code
+bin/ameba                  # lint (after: crystal build bin/ameba.cr -o bin/ameba)
+```
 
-# Getting Started
-For the rest of this section, it is assumed that you have Cursor installed and whichever account level you chose allows you to use the Composer and `agent` sidebar features.
+## Project layout
 
-## How This Application Template Works
+```
+src/
+  controllers/   # HTTP handlers (public/ + authenticated/)
+  models/        # Grant models (users/)
+  views/         # typed view components (not ERB)
+  mailers/       # email
+config/          # database.cr (ENV-based), routes.cr, application.cr
+db/
+  migrations/    # .sql migrations (micrate)
+  micrate.cr     # migration runner (ENV-based; no YAML/ERB)
+bin/             # setup, server, new-app helpers
+spec/            # tests
+help/            # how-to guides for building each part
+```
 
-This template is meant for you to use the Agent feature that Cursor provides to generate code for you. There are lots of `md` files in each directory that contain instructions on how to generate code for that part of the application. There are also help documents that can be used by the Agent or yourself to increase your understand of how the application works under the hood. This is helpful in case the agent has made a mistake or gotten stuck.
+## Configuration
 
-The two most important document structures are as follows:
-- `src/` - This is where the code for the application lives.
-- `help/` - This is where you can put any helpful documents that can be used by the Agent or yourself to increase your understand of how the application works under the hood. This is helpful in case the agent has made a mistake or gotten stuck.
+Configuration is environment-based (12-factor). `bin/setup` creates `.env` from
+[`.env.example`](.env.example). Local development needs nothing beyond a running
+PostgreSQL — the app connects as your shell user (`whoami`) to
+`<app>_development` by default. Override with `DATABASE_URL` or the `DB_*` vars
+in `.env`. Never commit `.env` or `.encryption_key` (both are git-ignored).
 
-Each directory with `src/` has it's own docs and they follow the naming convention of `src/`**`directory_name`**/`i_want_to_{action name to perform}.md`.
-Each directory with `help/` has it's own docs and they follow the naming convention of `help/`**`action name`**/`help_with_i_want_to_{action name to perform}.md`.
+## Deploy
 
-If you're not sure which document to look with, you can always have the agent look it up for you! 😉
+A production `Dockerfile` and `migrate.sh` are included. See the in-repo
+deployment notes, or use AgentC's hardened DigitalOcean runbook (premium).
 
-## Workflow For Programming Using An Agent
+## License
 
-1. If you've just forked this repo, you'll want to start by updating the app details to the name of your project.
-  In the cursor sidebar, CMD+SHIFT+O (the letter O, not the number `0`) and then type `I want you to perform @files/initial_application_configuration using the application name <your application name> and my github username <`.
-2. Now, let the magic BEGIN!
-
-
+MIT © AgentC Consulting. See [LICENSE](LICENSE).

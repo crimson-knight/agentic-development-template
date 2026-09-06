@@ -1,4 +1,4 @@
-require "../../../../lib/asset_pipeline/src/components/base/stateless_component"
+require "asset_pipeline/components/base/stateless_component"
 require "./session_info_component"
 
 module Components
