@@ -1,7 +1,7 @@
 type: app
 database: pg
 language: ecr
-model: jennifer
+model: grant
 
 # list of tasks to be run by `amber watch`
 watch:

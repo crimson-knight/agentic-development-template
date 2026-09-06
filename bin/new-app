@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+#
+# bin/new-app — rename this template to your own app, in one command.
+# Rewrites the shard name, build target, entry file, binary, DB-name defaults,
+# and docs. Run from the project root: bin/new-app my_app_name
+#
+#   my_app_name   snake_case identifier (e.g. acme_portal)
+#
+# Idempotent-ish: detects the current slug from shard.yml.
+set -euo pipefail
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+die() { echo "error: $*" >&2; exit 1; }
+NEW_SLUG="${1:-}"
+[ -n "$NEW_SLUG" ] || die "usage: bin/new-app <my_app_name>  (snake_case)"
+echo "$NEW_SLUG" | grep -Eq '^[a-z][a-z0-9_]*$' || die "name must be snake_case: [a-z][a-z0-9_]* (got '$NEW_SLUG')"
+
+OLD_SLUG="$(awk '/^name:/{print $2; exit}' shard.yml)"
+[ -n "$OLD_SLUG" ] || die "could not read name from shard.yml"
+OLD_KEBAB="${OLD_SLUG//_/-}"; NEW_KEBAB="${NEW_SLUG//_/-}"
+[ "$OLD_SLUG" = "$NEW_SLUG" ] && { echo "already named '$NEW_SLUG'"; exit 0; }
+
+# Files that carry the identity string (snake or kebab). lib/ is never touched.
+FILES=(shard.yml .amber.yml config/database.cr db/micrate.cr migrate.sh README.md CLAUDE.md Dockerfile)
+for f in "${FILES[@]}"; do
+  [ -f "$f" ] || continue
+  OLD_SLUG="$OLD_SLUG" NEW_SLUG="$NEW_SLUG" OLD_KEBAB="$OLD_KEBAB" NEW_KEBAB="$NEW_KEBAB" \
+    perl -0pi -e 's/\Q$ENV{OLD_SLUG}\E/$ENV{NEW_SLUG}/g; s/\Q$ENV{OLD_KEBAB}\E/$ENV{NEW_KEBAB}/g' "$f"
+  echo "  edited $f"
+done
+
+# rename the entry point
+if [ -f "src/${OLD_SLUG}.cr" ]; then
+  git mv "src/${OLD_SLUG}.cr" "src/${NEW_SLUG}.cr" 2>/dev/null || mv "src/${OLD_SLUG}.cr" "src/${NEW_SLUG}.cr"
+  echo "  renamed src/${OLD_SLUG}.cr -> src/${NEW_SLUG}.cr"
+fi
+
+cat <<DONE
+
+Renamed: ${OLD_SLUG} -> ${NEW_SLUG}
+Next:
+  bin/setup        # (re)create + migrate ${NEW_SLUG}_development / _test
+  bin/server
+DONE

@@ -1,94 +1,57 @@
 require "./spec_helper"
 
-class AuthenticatedRoutesSpec
-  include RequestHelper
-  include TestHelpers
-
-  def handler
-    Amber::Server.instance
-  end
-end
-
 describe "Authenticated Routes" do
-  spec = AuthenticatedRoutesSpec.new
-
   describe "GET /dashboard" do
-    context "when not authenticated" do
-      it "redirects to login page" do
-        response = spec.get("/dashboard")
-
-        response.status_code.should eq(302)
-        response.headers["Location"]?.should eq("/login")
-      end
-
-      it "shows warning flash message" do
-        response = spec.get("/dashboard")
-
-        # Flash message should say "Please Sign In"
-        response.status_code.should eq(302)
-      end
+    it "redirects to login when unauthenticated" do
+      response = App.get("/dashboard")
+      response.status_code.should eq(302)
+      response.redirect_url.should eq("/login")
     end
 
-    context "when authenticated as regular user" do
-      it "allows access to dashboard" do
-        user = spec.create_regular_user
-
-        # TODO: Need to implement session handling in tests
-        # For now, this test documents the expected behavior
-        # response = get("/dashboard", authenticated_headers(user))
-        # response.status_code.should eq(200)
-        pending "Session handling in tests not yet implemented"
-      end
+    it "allows access for an authenticated regular user" do
+      TestData.create_regular_user("reg@test.com", "password123")
+      headers = TestData.session_headers("reg@test.com", "password123")
+      App.get("/dashboard", headers).status_code.should eq(200)
     end
 
-    context "when authenticated as admin" do
-      it "allows access to dashboard" do
-        admin = spec.create_admin_user
-
-        # TODO: Need to implement session handling in tests
-        pending "Session handling in tests not yet implemented"
-      end
+    it "allows access for an authenticated admin" do
+      TestData.create_admin_user("adm@test.com", "adminpass123")
+      headers = TestData.session_headers("adm@test.com", "adminpass123")
+      App.get("/dashboard", headers).status_code.should eq(200)
     end
   end
 
   describe "GET /settings" do
-    context "when not authenticated" do
-      it "redirects to login page" do
-        response = spec.get("/settings")
-
-        response.status_code.should eq(302)
-        response.headers["Location"]?.should eq("/login")
-      end
+    it "redirects to login when unauthenticated" do
+      response = App.get("/settings")
+      response.status_code.should eq(302)
+      response.redirect_url.should eq("/login")
     end
 
-    context "when authenticated" do
-      it "shows user's own information" do
-        # TODO: Implement once settings page exists
-        pending "Settings page not yet implemented"
-      end
+    it "shows the current user's email when authenticated" do
+      TestData.create_regular_user("me@test.com", "password123")
+      headers = TestData.session_headers("me@test.com", "password123")
+      response = App.get("/settings", headers)
+      response.status_code.should eq(200)
+      response.body.should contain("me@test.com")
+    end
 
-      it "displays current user email" do
-        pending "Settings page not yet implemented"
-      end
-
-      it "displays user type (Regular or Admin)" do
-        pending "Settings page not yet implemented"
-      end
+    it "shows the account type" do
+      TestData.create_admin_user("adm2@test.com", "adminpass123")
+      headers = TestData.session_headers("adm2@test.com", "adminpass123")
+      App.get("/settings", headers).body.should contain("Admin")
     end
   end
 
   describe "Authentication pipe" do
-    it "sets current_user in context when session valid" do
-      # This tests the CurrentUserPipe behavior
-      pending "Requires session mock implementation"
+    it "leaves the request unauthenticated with no session" do
+      App.get("/dashboard").status_code.should eq(302)
     end
 
-    it "leaves current_user nil when no session" do
-      pending "Requires session mock implementation"
-    end
-
-    it "identifies user_type from session" do
-      pending "Requires session mock implementation"
+    it "authenticates the request with a valid session" do
+      TestData.create_regular_user("pipe@test.com", "password123")
+      headers = TestData.session_headers("pipe@test.com", "password123")
+      App.get("/dashboard", headers).status_code.should eq(200)
     end
   end
 end

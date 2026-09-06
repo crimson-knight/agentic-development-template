@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#
+# bin/server — start the app in development.
+# Loads .env, then runs the entry point declared in shard.yml.
+set -euo pipefail
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+set -a; [ -f .env ] && . ./.env; set +a
+main="$(awk '/main:/{print $2; exit}' shard.yml)"
+[ -n "$main" ] || { echo "could not find target 'main:' in shard.yml" >&2; exit 1; }
+
+echo "Starting $main on http://localhost:${PORT:-3000} …"
+exec crystal run "$main"

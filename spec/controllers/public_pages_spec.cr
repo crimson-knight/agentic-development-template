@@ -1,51 +1,25 @@
 require "./spec_helper"
 
-class PublicPagesSpec
-  include RequestHelper
-  include TestHelpers
-
-  def handler
-    Amber::Server.instance
-  end
-end
-
 describe "Public Pages" do
-  spec = PublicPagesSpec.new
-
-  describe "GET /" do
-    it "renders the homepage without authentication" do
-      response = spec.get("/")
-      response.status_code.should eq(200)
-    end
-
-    it "is accessible to unauthenticated users" do
-      response = spec.get("/")
-      response.status_code.should_not eq(302) # Should not redirect to login
-    end
+  it "renders the homepage without authentication" do
+    App.get("/").status_code.should eq(200)
   end
 
-  describe "GET /login" do
-    it "renders the login page" do
-      response = spec.get("/login")
-      response.status_code.should eq(200)
-    end
-
-    it "is accessible without authentication" do
-      response = spec.get("/login")
-      response.status_code.should eq(200)
-      response.body.should contain("login") # Should contain login form
-    end
+  it "renders the login page" do
+    response = App.get("/login")
+    response.status_code.should eq(200)
+    response.body.downcase.should contain("sign in")
   end
 
-  describe "Public routes accessibility" do
-    it "allows access to marketing pages without authentication" do
-      public_routes = ["/", "/login"]
+  it "renders the signup page" do
+    response = App.get("/signup")
+    response.status_code.should eq(200)
+    response.body.downcase.should contain("create")
+  end
 
-      public_routes.each do |route|
-        response = spec.get(route)
-        response.status_code.should_not eq(302), "Route #{route} should not redirect"
-        response.status_code.should eq(200), "Route #{route} should be accessible"
-      end
+  it "does not redirect public routes to login" do
+    ["/", "/login", "/signup"].each do |route|
+      App.get(route).status_code.should eq(200)
     end
   end
 end

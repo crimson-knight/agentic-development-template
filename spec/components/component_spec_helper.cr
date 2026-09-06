@@ -4,7 +4,7 @@ require "spec"
 # This lighter spec helper is for testing Asset Pipeline components in isolation
 
 # Load Asset Pipeline component system
-require "../../lib/asset_pipeline/src/components/base/component"
-require "../../lib/asset_pipeline/src/components/base/stateless_component"
-require "../../lib/asset_pipeline/src/components/base/stateful_component"
-require "../../lib/asset_pipeline/src/components/elements/base/html_element"
+require "asset_pipeline/components/base/component"
+require "asset_pipeline/components/base/stateless_component"
+require "asset_pipeline/components/base/stateful_component"
+require "asset_pipeline/components/elements/base/html_element"

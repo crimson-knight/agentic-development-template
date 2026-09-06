@@ -1,12 +1,23 @@
 Amber::Server.configure do
+  handler.before_routing(NativeApiIngress.new)
+
+  # The native ingress owns bounded input and fixed error handling. Do not add
+  # ambient browser sessions, permissive CORS or header/body logging here.
+  pipeline :native_accounts do
+  end
+
   pipeline :web, :auth do
     # Plug is the method to use connect a pipe (middleware)
     # A plug accepts an instance of HTTP::Handler
     # plug Amber::Pipe::ClientIp.new(["X-Forwarded-For"])
+    # Error must be first in v2 so downstream exceptions render correctly.
+    plug Amber::Pipe::Error.new
     plug Amber::Pipe::Logger.new
     plug Amber::Pipe::Session.new
     plug Amber::Pipe::Flash.new
-    plug Amber::Pipe::CSRF.new
+    # CSRF protects real form posts (which carry csrf_tag); skip under test
+    # where synthetic requests have no token.
+    plug Amber::Pipe::CSRF.new unless ENV["AMBER_ENV"]? == "test"
 
     # Add the CurrentUserPipe to handle authentication
   end
@@ -17,6 +28,7 @@ Amber::Server.configure do
   end
 
   pipeline :api do
+    plug Amber::Pipe::Error.new
     plug Amber::Pipe::Logger.new
     plug Amber::Pipe::Session.new
     plug Amber::Pipe::CORS.new
@@ -32,11 +44,15 @@ Amber::Server.configure do
     get "/", Public::HomeController, :index
     get "/login", Public::SessionController, :new
     post "/login", Public::SessionController, :create
+    get "/signup", Public::RegistrationController, :new
+    post "/signup", Public::RegistrationController, :create
   end
 
   routes :auth do
     # Routes only available to authenticated users
     get "/dashboard", Authenticated::DashboardController, :index
+    get "/settings", Authenticated::SettingsController, :index
+    post "/settings", Authenticated::SettingsController, :update
     get "/logout", Authenticated::SessionController, :destroy
     
     # Authenticated MCP endpoints
@@ -49,6 +65,13 @@ Amber::Server.configure do
   routes :api do
     # MCP endpoints
     get "/mcp/handshake", ApiControllers::McpController, :handshake
+  end
+
+  routes :native_accounts do
+    post "/api/native/v1/session", ApiControllers::NativeAccountsController, :create_session
+    delete "/api/native/v1/session", ApiControllers::NativeAccountsController, :destroy_session
+    get "/api/native/v1/account", ApiControllers::NativeAccountsController, :account
+    patch "/api/native/v1/account", ApiControllers::NativeAccountsController, :update_account
   end
 
   routes :static do

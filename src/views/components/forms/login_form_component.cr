@@ -1,4 +1,4 @@
-require "../../../../lib/asset_pipeline/src/components/base/stateful_component"
+require "asset_pipeline/components/base/stateful_component"
 require "../shared/icon_component"
 
 module Components
@@ -155,7 +155,7 @@ module Components
           html << "<form data-component=\"login-form\" data-state=\"#{form_state}\" class=\"mt-8 space-y-6\" action=\"#{action}\" method=\"POST\" data-controller=\"login\" data-action=\"submit->login#handleSubmit\">"
 
           # CSRF token
-          html << "<input type=\"hidden\" name=\"authenticity_token\" value=\"#{csrf_token}\">"
+          html << "<input type=\"hidden\" name=\"_csrf\" value=\"#{csrf_token}\">"
           html << "<input type=\"hidden\" name=\"remember\" value=\"true\">"
 
           # Form fields
