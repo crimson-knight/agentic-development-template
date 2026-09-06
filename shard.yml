@@ -15,7 +15,7 @@ targets:
 dependencies:
   amber:
     github: crimson-knight/amber
-    branch: v2-dev
+    commit: ab90eae910a4bd3a74f3f52ba8dfe238817994c3
 
   quartz_mailer:
     github: amberframework/quartz-mailer
@@ -27,27 +27,27 @@ dependencies:
 
   grant:
     github: crimson-knight/grant
-    branch: main
+    commit: 80fa83649e5eb6501759f528299f6f78f62d4bd7
 
   gemma:
     github: crimson-knight/gemma
-    branch: master
+    commit: 1ea830cab5a249383760e07f0f6eda33d0a866ce
 
   asset_pipeline:
-    github: amberframework/asset_pipeline
+    github: crimson-knight/asset_pipeline
     # version: ~> 0.34.0
-    branch: main
+    commit: 4c40068cd25d435e533c24c4fb219b28a6fdafcc
 
   # S3 support for Gemma in production (version managed by Gemma)
   # awscr-s3 is a transitive dependency through Gemma
 
   mcprotocol:
     github: crimson-knight/mcprotocol
-    branch: main
+    commit: a199d0494b3a7f2046676d650e67db2e6e22f66c
 
   micrate:
     github: amberframework/micrate
-    branch: master
+    commit: 647fac0490a522956fef305c720e8ebf1422a87d
 
 development_dependencies:
   ameba:
