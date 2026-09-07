@@ -248,3 +248,14 @@ Left alone on purpose: the `Dockerfile` still installs `sqlite-dev` and
 `digitalocean-deployment.md` still explains it as a SQLite build need, which
 no longer applies; that image is not buildable on this machine, so the
 package line stays until a deployment build can prove its removal.
+
+## September 7 — the reference app on a physical phone
+
+`mobile/android/android.sh test` passed on a Samsung Galaxy A15 5G (SM-A156U,
+Android 16, One UI 8): 13 tests, the same three-screen account flow against
+the task-local TLS account server reached through `adb reverse`, with the
+account-proof screenshots pulled from the device. The phone had no network
+time (its clock read November 2025), so the task-only certificate authority
+and server certificate were reissued with a validity window that covers the
+device's date before the run; a phone with a live clock needs no such step.
+The evidence lives with the other proof directories outside this repository.
