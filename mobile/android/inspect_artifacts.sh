@@ -8,7 +8,9 @@ evidence="${1:-$project_root/build/android-artifact-evidence}"
 mkdir -p "$evidence"
 setting() { awk -F= -v key="$1" '$1 == key { sub(/^[^=]*=/, ""); print; exit }' "$script_dir/android-app.properties"; }
 apk="$script_dir/app/build/outputs/apk/debug/app-debug.apk"
-release_apk="$script_dir/app/build/outputs/apk/release/app-release-unsigned.apk"
+# A release signed from the environment is app-release.apk; an unsigned one keeps the -unsigned suffix.
+release_apk="$script_dir/app/build/outputs/apk/release/app-release.apk"
+[[ -f "$release_apk" ]] || release_apk="$script_dir/app/build/outputs/apk/release/app-release-unsigned.apk"
 bundle="$script_dir/app/build/outputs/bundle/release/app-release.aab"
 unzip -Z1 "$apk" > "$evidence/apk-entries.txt"
 unzip -Z1 "$bundle" > "$evidence/bundle-entries.txt"
@@ -111,4 +113,19 @@ while IFS= read -r abi; do
   [[ "$(build_id "$evidence/$abi/libasset_pipeline_app.so.dbg")" == "$expected" ]]
 done < <(android_each_abi "$(setting abis)")
 shasum -a 256 "$apk" "$release_apk" "$bundle" > "$evidence/artifact-sha256.txt"
+# Release signing evidence: a signed release APK must verify with apksigner and
+# the App Bundle with jarsigner, and the signer certificate is recorded; an
+# unsigned release is recorded as such. A configured key with an unsigned
+# output is a failure. No password reaches the evidence.
+apksigner="$ANDROID_RESOLVED_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION/apksigner"
+jarsigner_bin="${JAVA_HOME:+$JAVA_HOME/bin/}jarsigner"
+if [[ "$release_apk" == *-unsigned.apk ]]; then
+  [[ -z "${AMBER_ANDROID_KEYSTORE:-}" ]] || { echo "Release signing was configured but the release APK is unsigned" >&2; exit 1; }
+  printf 'release-apk=unsigned\nrelease-bundle=unsigned\n' > "$evidence/release-signing.txt"
+else
+  { echo "release-apk=signed"; "$apksigner" verify --print-certs "$release_apk"; } > "$evidence/release-signing.txt"
+  bundle_verify="$("$jarsigner_bin" -verify "$bundle" 2>&1)"
+  grep -q 'jar verified' <<< "$bundle_verify" || { echo "Release App Bundle is not signed by the configured key" >&2; exit 1; }
+  printf 'release-bundle=signed\n' >> "$evidence/release-signing.txt"
+fi
 echo "PASS: selected ABIs, packaged ELF/JNI exports and matching native debug symbols"

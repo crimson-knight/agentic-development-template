@@ -61,6 +61,20 @@ val prepareAccountDebugTls by tasks.registering {
         """.trimIndent())
     }
 }
+// Release signing comes from the environment, never from source control.
+// AMBER_ANDROID_KEYSTORE (path), AMBER_ANDROID_KEYSTORE_PASSWORD,
+// AMBER_ANDROID_KEY_ALIAS and AMBER_ANDROID_KEY_PASSWORD together sign the
+// release APK and App Bundle with that upload key; with none of them set the
+// release artifacts stay unsigned. A partial set fails the build instead of
+// quietly producing an unsigned release.
+val releaseSigningNames = listOf("AMBER_ANDROID_KEYSTORE", "AMBER_ANDROID_KEYSTORE_PASSWORD", "AMBER_ANDROID_KEY_ALIAS", "AMBER_ANDROID_KEY_PASSWORD")
+val releaseSigning = releaseSigningNames.associateWith { name -> System.getenv(name)?.takeIf { it.isNotEmpty() } }
+val releaseSigningPresent = releaseSigning.values.count { it != null }
+require(releaseSigningPresent == 0 || releaseSigningPresent == releaseSigningNames.size) {
+    "Release signing needs all of ${releaseSigningNames.joinToString()}; missing: ${releaseSigning.filterValues { it == null }.keys.joinToString()}"
+}
+val releaseKeystore = releaseSigning["AMBER_ANDROID_KEYSTORE"]?.let { file(it) }
+require(releaseKeystore == null || releaseKeystore.isFile) { "AMBER_ANDROID_KEYSTORE is not a readable file: $releaseKeystore" }
 android {
     namespace = "dev.amber.generated"
     compileSdk = app.getProperty("compileSdk").toInt()
@@ -75,11 +89,22 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         ndk { abiFilters += app.getProperty("abis").split(',') }
     }
+    signingConfigs {
+        if (releaseKeystore != null) {
+            create("release") {
+                storeFile = releaseKeystore
+                storePassword = releaseSigning.getValue("AMBER_ANDROID_KEYSTORE_PASSWORD")
+                keyAlias = releaseSigning.getValue("AMBER_ANDROID_KEY_ALIAS")
+                keyPassword = releaseSigning.getValue("AMBER_ANDROID_KEY_PASSWORD")
+            }
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
             ndk.debugSymbolLevel = "FULL"
-            // Supply release signing outside source control before distribution.
+            // Signed only when the environment supplies the upload key above.
+            if (releaseKeystore != null) signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
