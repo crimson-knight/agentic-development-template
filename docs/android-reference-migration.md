@@ -193,3 +193,20 @@ run projected the main checkout's installed copies of those shards behind the
 worktree's own `lib/` through `CRYSTAL_PATH` (`agentc-env.sh` in the evidence)
 and changed no tracked file. Either dropping the three requires or restoring
 the three shards is a one-commit fix that needs a decision.
+
+## September 7 — release signing from the environment
+
+`mobile/android/app/build.gradle.kts` signs the release APK and App Bundle
+when `AMBER_ANDROID_KEYSTORE`, `AMBER_ANDROID_KEYSTORE_PASSWORD`,
+`AMBER_ANDROID_KEY_ALIAS` and `AMBER_ANDROID_KEY_PASSWORD` are all set; with
+none set the release artifacts stay unsigned as before, and a partial set or a
+missing keystore file fails Gradle configuration with the missing names.
+`inspect_artifacts.sh` accepts either release APK name, verifies a signed APK
+with `apksigner` and the bundle with `jarsigner`, records the signer
+certificate or `unsigned` in `release-signing.txt`, and fails when a key was
+configured but the output is unsigned. Proven with a throwaway key that lived
+only in the task's scratch directory: `android.sh build` produced a signed
+`app-release.apk` and `app-release.aab` (inspector PASS), the same build
+without the variables produced `app-release-unsigned.apk` with an `unsigned`
+record, and one variable alone failed configuration. The upload key and the
+Play Console side are outside this repository.
