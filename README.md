@@ -58,7 +58,7 @@ That's it. `bin/setup` is idempotent — re-run it any time.
 
 ```bash
 bin/server                 # run the app (loads .env)
-crystal spec               # run the test suite
+bin/spec                   # run the test suite against a database this checkout owns
 bin/micrate up             # apply new migrations  (bin/setup builds bin/micrate)
 bin/micrate status         # see migration state
 crystal tool format        # format code

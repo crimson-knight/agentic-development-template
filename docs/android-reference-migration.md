@@ -33,7 +33,11 @@ DATABASE_URL=postgres://your_user@127.0.0.1:5432/agentc_android_your_unique_suff
 crystal run scripts/native_reference_spec.cr
 ```
 
-Provision and migrate that disposable database separately, after verifying its
+`bin/spec` automates this for day-to-day runs: it names a database after the
+checkout's path, creates it if missing, migrates it forward and runs the
+runner above, so no two checkouts share a test database; it is also the
+fleet gate's spec command (`.crystal-spec-cmd`). For a one-off task,
+provision and migrate a disposable database separately, after verifying its
 exact identity and emptiness. The runner requires the constrained database name
 and URL and checks the actual configured writer's `current_database()` before
 registering application specs or destructive hooks. It does not provision,
