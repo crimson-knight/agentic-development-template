@@ -26,6 +26,7 @@ production.yml
 !/bin/setup
 !/bin/server
 !/bin/new-app
+!bin/spec
 
 # local Claude Code settings
 .claude/settings.local.json

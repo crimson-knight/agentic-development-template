@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#
+# bin/spec — run the test suite against a database THIS checkout owns.
+#
+# `AMBER_ENV=test` alone is not isolation: the suite's default database name
+# comes from the shard name, so every checkout, worktree and derived app with
+# this shard name would share `agentc_app_template_oss_test`, and one of them
+# migrating it to another lineage breaks the others (docs/android-reference-
+# migration.md, "Safe web validation"). This script names a database after
+# the checkout's path, creates it if missing, migrates it forward with the
+# repository's own migration runner, and runs the isolated spec runner, which
+# refuses any database that is not the one it was told about.
+#
+# Usage: bin/spec            (this is also the fleet gate's spec command,
+#                             see .crystal-spec-cmd)
+#        DB_USER=... DB_HOST=... DB_PORT=... bin/spec
+set -euo pipefail
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+CRYSTAL="${CRYSTAL:-${CRYSTAL_BIN:-crystal}}"
+command -v "$CRYSTAL" >/dev/null || { echo "bin/spec: Crystal not found ($CRYSTAL)" >&2; exit 1; }
+command -v psql >/dev/null && command -v createdb >/dev/null || { echo "bin/spec: PostgreSQL client tools are required" >&2; exit 1; }
+
+user="${DB_USER:-$(whoami)}"
+host="${DB_HOST:-127.0.0.1}"
+port="${DB_PORT:-5432}"
+# One database per checkout path; the runner accepts only agentc_android_[a-z0-9_]+.
+suffix="$(printf '%s' "$PWD" | shasum -a 256 | cut -c1-12)"
+database="agentc_android_spec_${suffix}"
+url="postgres://${user}@${host}:${port}/${database}"
+
+if ! psql -At -h "$host" -p "$port" -U "$user" -c "select 1 from pg_database where datname='${database}'" postgres | grep -q 1; then
+  createdb -h "$host" -p "$port" -U "$user" "$database"
+  echo "bin/spec: created ${database}"
+fi
+
+export AGENTC_TEST_DATABASE="$database" DATABASE_URL="$url" AMBER_ENV=test APP_ENV=test
+echo "bin/spec: database ${database} (this checkout only)"
+"$CRYSTAL" run scripts/native_reference_migrate.cr
+exec "$CRYSTAL" run scripts/native_reference_spec.cr -- "$@"
