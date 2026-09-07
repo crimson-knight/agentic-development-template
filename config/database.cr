@@ -1,10 +1,6 @@
 require "pg"
 require "grant"
 require "grant/adapter/pg"
-# Grant's locking module references all adapters, so we need to require them
-# even if we're only using PostgreSQL
-require "grant/adapter/mysql"
-require "grant/adapter/sqlite"
 require "yaml"
 
 {% if @top_level.has_constant? "Spec" %}

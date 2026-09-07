@@ -12,7 +12,6 @@ require "asset_pipeline"
 
 require "./settings"
 require "./logger"
-require "./i18n"
 require "./database"
 require "./initializers/**"
 

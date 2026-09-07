@@ -23,11 +23,11 @@ dependencies:
 
   pg:
     github: will/crystal-pg
-    version: ~> 0.28.0
+    version: ~> 0.30.0
 
   grant:
     github: crimson-knight/grant
-    commit: 80fa83649e5eb6501759f528299f6f78f62d4bd7
+    commit: 56bf23d71a7a2e6c39607aa1ae1b3b6b38e4ca18
 
   gemma:
     github: crimson-knight/gemma

@@ -210,3 +210,41 @@ only in the task's scratch directory: `android.sh build` produced a signed
 without the variables produced `app-release-unsigned.apk` with an `unsigned`
 record, and one variable alone failed configuration. The upload key and the
 Play Console side are outside this repository.
+
+## September 7 — the dropped-shard defect is closed
+
+Commit 9716cac had removed the `i18n` shard while `config/application.cr`
+still required `config/i18n.cr`, and `config/database.cr` still required the
+`mysql` and `sqlite` Grant adapters behind a comment saying Grant needed every
+adapter compiled in. Neither shard was in `shard.yml`, so a clean
+`shards install` followed by any host build stopped at `can't find file
+'i18n'`. The repair follows the intent of that commit rather than reversing
+it:
+
+- `config/database.cr` requires only `grant/adapter/pg`. The comment was true
+  of the pinned Grant: `Grant::Transaction#start_transaction` dispatched on
+  the adapter constants, which forced all three adapters into every binary.
+  Grant commit 4ae3216 ("Fix transaction adapter dispatch to not require all
+  adapter constants") switches that dispatch to the adapter's class name, the
+  same constant-free pattern the rest of Grant already used. The template now
+  pins Grant at the fork head, `56bf23d`, which carries that fix and the
+  encryption IV round-trip fix.
+- Grant at that commit requires crystal-db 0.14, so `pg` moves from
+  `~> 0.28.0` to `~> 0.30.0` (the first crystal-pg release on crystal-db 0.14)
+  and the lock resolves `db 0.14.0`, `pg 0.30.0` and the Grant commit above.
+- `config/i18n.cr`, its require and `src/locales/en.yml` are gone. Nothing in
+  `src/` or `spec/` called `I18n`; the locale file held one unused key.
+
+Proof on this branch: `crystal build --no-codegen` of the web target passes
+from the refreshed lock (one pre-existing `Time.monotonic` deprecation
+warning). The isolated-database procedure above ran against a task-owned
+database that was created empty, migrated forward (three migrations OK) and
+dropped afterward: `scripts/native_reference_spec.cr` finished with
+350 examples, 0 failures, 0 errors, 3 pending (the three pending examples are
+the pre-existing permission placeholders). The Android entry point,
+`src/platform/android/app.cr`, never reaches Grant, `pg` or the database
+configuration, so the mobile lane's compiled code is unchanged by the pins.
+Left alone on purpose: the `Dockerfile` still installs `sqlite-dev` and
+`digitalocean-deployment.md` still explains it as a SQLite build need, which
+no longer applies; that image is not buildable on this machine, so the
+package line stays until a deployment build can prove its removal.
